@@ -94,6 +94,13 @@ CREATE POLICY "users_service_only" ON users
   TO anon, authenticated
   USING (false);
 
+-- business_type_templates: only accessible via service role
+ALTER TABLE business_type_templates ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "business_type_templates_service_only" ON business_type_templates
+  FOR ALL
+  TO anon, authenticated
+  USING (false);
+
 -- ─── Verification ───────────────────────────────────────────
 -- After running, verify in Supabase SQL Editor using the
 -- anon key role:

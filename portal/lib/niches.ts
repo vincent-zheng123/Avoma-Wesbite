@@ -30,7 +30,7 @@ export interface NicheDisplayField {
 
 // ─── Dental ──────────────────────────────────────────────────────────────────
 
-const DENTAL_FIELDS: NicheField[] = [
+export const DENTAL_FIELDS: NicheField[] = [
   {
     key: "isNewPatient",
     label: "New Patient?",
@@ -65,7 +65,7 @@ const DENTAL_FIELDS: NicheField[] = [
 
 // ─── Roofing ─────────────────────────────────────────────────────────────────
 
-const ROOFING_FIELDS: NicheField[] = [
+export const ROOFING_FIELDS: NicheField[] = [
   {
     key: "address",
     label: "Property Address",
@@ -115,7 +115,7 @@ const ROOFING_FIELDS: NicheField[] = [
 
 // ─── HVAC ────────────────────────────────────────────────────────────────────
 
-const HVAC_FIELDS: NicheField[] = [
+export const HVAC_FIELDS: NicheField[] = [
   {
     key: "address",
     label: "Service Address",
@@ -165,7 +165,7 @@ export const NICHE_INTEL_FIELDS: Record<string, NicheField[]> = {
 
 // ─── Vapi structuredDataSchema ────────────────────────────────────────────────
 
-function buildVapiSchema(fields: NicheField[]): object {
+export function buildVapiSchema(fields: NicheField[]): object {
   const properties: Record<string, object> = {};
 
   for (const field of fields) {
@@ -331,6 +331,69 @@ export const NICHE_DISPLAY_CONFIG: Record<string, NicheDisplayField[]> = {
     },
   })),
 };
+
+// ─── Async DB-backed functions (runtime layer) ────────────────────────────────
+
+import { prisma } from "@/lib/prisma";
+
+/**
+ * Fetch a single active template from the database by slug.
+ * Returns null if not found or inactive.
+ */
+export async function getNicheTemplate(slug: string): Promise<{
+  slug: string;
+  displayName: string;
+  fieldDefinitions: NicheField[];
+  systemPromptAddon: string;
+  structuredDataSchema: object;
+} | null> {
+  const template = await prisma.businessTypeTemplate.findUnique({
+    where: { slug, isActive: true },
+  });
+  if (!template) return null;
+  return {
+    slug: template.slug,
+    displayName: template.displayName,
+    fieldDefinitions: template.fieldDefinitions as unknown as NicheField[],
+    systemPromptAddon: template.systemPromptAddon,
+    structuredDataSchema: template.structuredDataSchema as unknown as object,
+  };
+}
+
+/**
+ * Fetch all active templates — used by admin onboarding form dropdown.
+ */
+export async function getAllNicheTemplates(): Promise<
+  { slug: string; displayName: string }[]
+> {
+  return prisma.businessTypeTemplate.findMany({
+    where: { isActive: true },
+    select: { slug: true, displayName: true },
+    orderBy: { displayName: "asc" },
+  });
+}
+
+/**
+ * Get display fields from DB for rendering qualificationData in the CRM UI.
+ */
+export async function getNicheDisplayFields(
+  slug: string
+): Promise<NicheDisplayField[]> {
+  const template = await getNicheTemplate(slug);
+  if (!template) return [];
+  return template.fieldDefinitions.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown): string => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      if (f.type === "number") return `${val} yrs`;
+      return String(val);
+    },
+  }));
+}
 
 // ─── Base receptionist system prompt ─────────────────────────────────────────
 

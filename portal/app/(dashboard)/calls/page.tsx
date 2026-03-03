@@ -2,8 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { NICHE_DISPLAY_CONFIG } from "@/lib/niches";
+import { getNicheDisplayFields } from "@/lib/niches";
 import type { Prisma } from "@prisma/client";
+import { getEffectiveClientId } from "@/lib/getClientId";
 
 function outcomeColor(outcome: string) {
   const map: Record<string, string> = {
@@ -24,19 +25,20 @@ export default async function CallsPage() {
   if (!session) redirect("/login");
 
   const user = session.user;
-  if (!user.clientId) redirect("/admin");
+  const clientId = await getEffectiveClientId(user);
+  if (!clientId) redirect("/admin");
 
   // Fetch client to get industryType for niche field rendering
   const client = await prisma.client.findUnique({
-    where: { id: user.clientId },
+    where: { id: clientId },
     select: { industry: true },
   });
 
   const industryType = client?.industry ?? null;
-  const nicheFields = industryType ? (NICHE_DISPLAY_CONFIG[industryType] ?? []) : [];
+  const nicheFields = industryType ? await getNicheDisplayFields(industryType) : [];
 
   const calls = await prisma.callLog.findMany({
-    where: { clientId: user.clientId },
+    where: { clientId },
     orderBy: { timestamp: "desc" },
     take: 50,
   });

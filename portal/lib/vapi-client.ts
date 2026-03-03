@@ -5,11 +5,7 @@
  * Reads VAPI_API_KEY and VAPI_BASE_URL from env.
  */
 
-import {
-  BASE_SYSTEM_PROMPT,
-  NICHE_SYSTEM_PROMPT_ADDON,
-  NICHE_VAPI_STRUCTURED_SCHEMA,
-} from "@/lib/niches";
+import { BASE_SYSTEM_PROMPT } from "@/lib/niches";
 
 const VAPI_BASE_URL = process.env.VAPI_BASE_URL ?? "https://api.vapi.ai";
 
@@ -31,6 +27,8 @@ export interface VapiAssistantInput {
   businessHoursEnd: string;      // "17:00"
   timezone: string;              // "America/New_York"
   toolsWebhookUrl: string;       // n8n vapi-tools endpoint
+  systemPromptAddon: string;     // fetched from BusinessTypeTemplate in DB
+  structuredDataSchema: object;  // fetched from BusinessTypeTemplate in DB
 }
 
 export interface VapiAssistantResult {
@@ -45,20 +43,18 @@ export async function createVapiAssistant(
 ): Promise<VapiAssistantResult> {
   const {
     businessName,
-    industryType,
     businessHoursStart,
     businessHoursEnd,
     timezone,
     toolsWebhookUrl,
+    systemPromptAddon,
+    structuredDataSchema,
   } = input;
 
   const systemPrompt =
     BASE_SYSTEM_PROMPT(businessName, businessHoursStart, businessHoursEnd, timezone) +
     "\n\n" +
-    (NICHE_SYSTEM_PROMPT_ADDON[industryType] ?? "");
-
-  const structuredDataSchema =
-    NICHE_VAPI_STRUCTURED_SCHEMA[industryType] ?? NICHE_VAPI_STRUCTURED_SCHEMA["DENTAL"];
+    systemPromptAddon;
 
   const body = {
     name: `${businessName} AI Receptionist`,
@@ -205,6 +201,49 @@ export async function createVapiAssistant(
 
   const data = await res.json();
   return { id: data.id, name: data.name };
+}
+
+// ─── Purchase phone number ────────────────────────────────────────────────────
+
+export interface VapiPhoneNumberResult {
+  phoneNumber: string;
+  phoneNumberId: string;
+}
+
+export async function purchaseVapiPhoneNumber(
+  areaCode: string
+): Promise<VapiPhoneNumberResult> {
+  const res = await fetch(`${VAPI_BASE_URL}/phone-number`, {
+    method: "POST",
+    headers: vapiHeaders(),
+    body: JSON.stringify({ provider: "vapi", areaCode }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Vapi purchasePhoneNumber failed (${res.status}): ${err}`);
+  }
+
+  const data = await res.json();
+  return { phoneNumber: data.number, phoneNumberId: data.id };
+}
+
+// ─── Link phone number to assistant ──────────────────────────────────────────
+
+export async function linkVapiPhoneToAssistant(
+  phoneNumberId: string,
+  assistantId: string
+): Promise<void> {
+  const res = await fetch(`${VAPI_BASE_URL}/phone-number/${phoneNumberId}`, {
+    method: "PATCH",
+    headers: vapiHeaders(),
+    body: JSON.stringify({ assistantId }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Vapi linkPhoneToAssistant failed (${res.status}): ${err}`);
+  }
 }
 
 // ─── Delete assistant ─────────────────────────────────────────────────────────

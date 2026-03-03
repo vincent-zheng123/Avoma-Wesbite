@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { getEffectiveClientId } from "@/lib/getClientId";
 
 const statusColor: Record<string, string> = {
   PENDING_CONFIRMATION: "#fbbf24",
@@ -16,16 +17,17 @@ export default async function AppointmentsPage() {
   if (!session) redirect("/login");
 
   const user = session.user;
-  if (!user.clientId) redirect("/admin");
+  const clientId = await getEffectiveClientId(user);
+  if (!clientId) redirect("/admin");
 
   const [appointments, clientRow] = await Promise.all([
     prisma.appointment.findMany({
-      where: { clientId: user.clientId },
+      where: { clientId },
       orderBy: { scheduledAt: "desc" },
       take: 50,
     }),
     prisma.client.findUnique({
-      where: { id: user.clientId },
+      where: { id: clientId },
       select: { industry: true },
     }),
   ]);
@@ -69,7 +71,7 @@ export default async function AppointmentsPage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>Appointments</h1>
         <p className="text-sm mt-1" style={{ color: "#a78bfa" }}>All appointments booked by your AI receptionist</p>

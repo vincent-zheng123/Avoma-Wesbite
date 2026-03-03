@@ -2,8 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { NICHE_DISPLAY_CONFIG } from "@/lib/niches";
+import { getNicheDisplayFields } from "@/lib/niches";
 import type { Prisma } from "@prisma/client";
+import { getEffectiveClientId } from "@/lib/getClientId";
 
 const statusColor: Record<string, string> = {
   NEW: "#a78bfa",
@@ -20,19 +21,20 @@ export default async function LeadsPage() {
   if (!session) redirect("/login");
 
   const user = session.user;
-  if (!user.clientId) redirect("/admin");
+  const clientId = await getEffectiveClientId(user);
+  if (!clientId) redirect("/admin");
 
   // Fetch client to get industryType for niche field rendering
   const client = await prisma.client.findUnique({
-    where: { id: user.clientId },
+    where: { id: clientId },
     select: { industry: true },
   });
 
   const industryType = client?.industry ?? null;
-  const nicheFields = industryType ? (NICHE_DISPLAY_CONFIG[industryType] ?? []) : [];
+  const nicheFields = industryType ? await getNicheDisplayFields(industryType) : [];
 
   const leads = await prisma.lead.findMany({
-    where: { clientId: user.clientId },
+    where: { clientId },
     orderBy: { createdAt: "desc" },
     take: 100,
   });
@@ -82,7 +84,9 @@ export default async function LeadsPage() {
                   <tr key={lead.id} className="border-b last:border-0" style={{ borderColor: "rgba(168,85,247,0.08)" }}>
                     {/* Static columns */}
                     <td className="px-5 py-3.5">
-                      <p className="font-medium" style={{ color: "#f3f0ff" }}>{lead.contactName ?? lead.businessName ?? "—"}</p>
+                      <a href={`/leads/${lead.id}`}>
+                        <p className="font-medium hover:underline" style={{ color: "#f3f0ff" }}>{lead.contactName ?? lead.businessName ?? "—"}</p>
+                      </a>
                       <p className="text-xs" style={{ color: "#6b6b80" }}>{lead.contactEmail ?? ""}</p>
                     </td>
                     <td className="px-5 py-3.5 whitespace-nowrap" style={{ color: "#a78bfa" }}>{lead.contactPhone ?? "—"}</td>

@@ -2,6 +2,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import AgentStatusCard from "@/components/dashboard/AgentStatusCard";
+import { getEffectiveClientId } from "@/lib/getClientId";
 
 async function getStats(clientId: string) {
   const now = new Date();
@@ -55,9 +57,10 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const user = session.user;
-  if (!user.clientId) redirect("/admin");
+  const clientId = await getEffectiveClientId(user);
+  if (!clientId) redirect("/admin");
 
-  const stats = await getStats(user.clientId);
+  const stats = await getStats(clientId);
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
@@ -70,7 +73,7 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>
@@ -81,7 +84,11 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Metric cards */}
+      {/* Agent status + Metric cards */}
+      <div className="mb-4">
+        <AgentStatusCard />
+      </div>
+
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         {metrics.map((m) => (
           <div

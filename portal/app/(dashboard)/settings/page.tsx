@@ -2,22 +2,25 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import PasswordChangeForm from "@/components/dashboard/PasswordChangeForm";
+import { getEffectiveClientId } from "@/lib/getClientId";
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
   const user = session.user;
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { client: { include: { config: true } } },
-  });
+  const clientId = await getEffectiveClientId(user);
+  if (!clientId) redirect("/admin");
 
-  if (!dbUser?.client) redirect("/admin");
-  const { client } = dbUser;
+  const client = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: { config: true },
+  });
+  if (!client) redirect("/admin");
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>Settings</h1>
         <p className="text-sm mt-1" style={{ color: "#a78bfa" }}>Your business profile and AI receptionist configuration</p>
@@ -67,6 +70,8 @@ export default async function SettingsPage() {
           </p>
         </div>
       )}
+
+      <PasswordChangeForm />
     </div>
   );
 }

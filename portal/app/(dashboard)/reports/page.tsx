@@ -7,7 +7,7 @@ export default async function ReportsPage() {
   if (!session) redirect("/login");
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>Reports</h1>
         <p className="text-sm mt-1" style={{ color: "#a78bfa" }}>Performance analytics — coming in Phase 2</p>

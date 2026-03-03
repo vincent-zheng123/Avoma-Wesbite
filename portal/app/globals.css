@@ -2,26 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #06040f;
+  color: #f3f0ff;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* ── Virtual Office avatar animations ── */
+@keyframes avatarFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes avatarBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  94%, 98%      { transform: scaleY(0.08); }
+}
+@keyframes hairSway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50%      { transform: rotate(1.5deg); }
+}
+@keyframes platformPulse {
+  0%, 100% { opacity: 0.6; transform: scaleX(1); }
+  50%      { opacity: 1;   transform: scaleX(1.15); }
+}
+@keyframes waveformBar {
+  0%, 100% { transform: scaleY(0.3); }
+  50%      { transform: scaleY(1); }
+}
+@keyframes particleOrbit {
+  0%   { transform: rotate(0deg)   translateX(48px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(48px) rotate(-360deg); }
+}
+@keyframes envelopeFly {
+  0%   { transform: translate(0, 0)      scale(1);   opacity: 1; }
+  100% { transform: translate(60px, -50px) scale(0.4); opacity: 0; }
+}
+@keyframes monitorPulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
 }

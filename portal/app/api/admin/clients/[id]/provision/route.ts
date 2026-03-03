@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createVapiAssistant } from "@/lib/vapi-client";
-import { NICHE_INTEL_FIELDS } from "@/lib/niches";
+import { getNicheTemplate } from "@/lib/niches";
 
 /**
  * POST /api/admin/clients/[id]/provision
@@ -57,6 +57,15 @@ export async function POST(
 
   const industryType = client.industry as string;
 
+  // Fetch niche template from DB
+  const template = await getNicheTemplate(industryType);
+  if (!template) {
+    return NextResponse.json(
+      { error: `No active business type template found for industry: ${industryType}` },
+      { status: 400 }
+    );
+  }
+
   // N8N tools webhook URL — read from env, fall back to placeholder
   const toolsWebhookUrl =
     process.env.N8N_TOOLS_WEBHOOK_URL ??
@@ -69,16 +78,19 @@ export async function POST(
     businessHoursEnd: client.config.businessHoursEnd,
     timezone: client.config.timezone,
     toolsWebhookUrl,
+    systemPromptAddon: template.systemPromptAddon,
+    structuredDataSchema: template.structuredDataSchema,
   });
 
-  // Save assistant ID + niche config snapshot
+  // Save assistant ID + niche config snapshot (frozen at provision time)
   await prisma.clientConfig.update({
     where: { clientId },
     data: {
       vapiAssistantId: assistant.id,
       nicheConfig: {
         industryType,
-        fields: (NICHE_INTEL_FIELDS[industryType] ?? []).map((f) => ({
+        templateSlug: template.slug,
+        fields: template.fieldDefinitions.map((f) => ({
           key: f.key,
           label: f.label,
           type: f.type,

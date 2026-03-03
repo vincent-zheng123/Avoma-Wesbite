@@ -39,19 +39,20 @@ enum IndustryType {
 }
 
 model Client {
-  id            String        @id @default(cuid())
-  businessName  String        @map("business_name")
-  contactName   String        @map("contact_name")
-  email         String        @unique
-  phone         String?
-  industry      IndustryType?
-  location      String?
-  plan          ClientPlan    @default(STARTER)
-  status        ClientStatus  @default(ACTIVE)
-  websiteUrl    String?       @map("website_url")
-  websiteStatus String?       @map("website_status")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id             String        @id @default(cuid())
+  businessName   String        @map("business_name")
+  contactName    String        @map("contact_name")
+  email          String        @unique
+  phone          String?
+  industry       IndustryType?
+  location       String?
+  plan           ClientPlan    @default(STARTER)
+  status         ClientStatus  @default(ACTIVE)
+  monthlyRevenue String?       @map("monthly_revenue")
+  websiteUrl     String?       @map("website_url")
+  websiteStatus  String?       @map("website_status")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
 
   user           User?
   config         ClientConfig?
@@ -81,7 +82,7 @@ model ClientConfig {
   clientId             String    @unique @map("client_id")
   client               Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   businessName         String?   @map("business_name")
-  vapiPhoneNumber      String    @unique @map("vapi_phone_number")
+  vapiPhoneNumber      String?   @unique @map("vapi_phone_number")
   vapiPhoneNumberId    String?   @map("vapi_phone_number_id")
   vapiAssistantId      String?   @map("vapi_assistant_id")
   calendarType         String    @default("google") @map("calendar_type")
@@ -258,6 +259,22 @@ model ScheduledFollowup {
   createdAt     DateTime @default(now()) @map("created_at")
 
   @@map("scheduled_followups")
+}
+
+// ─── Business Type Templates ─────────────────────────────────────────────────
+
+model BusinessTypeTemplate {
+  id                   String   @id @default(cuid())
+  slug                 String   @unique
+  displayName          String   @map("display_name")
+  fieldDefinitions     Json     @map("field_definitions")
+  systemPromptAddon    String   @map("system_prompt_addon")
+  structuredDataSchema Json     @map("structured_data_schema")
+  isActive             Boolean  @default(true) @map("is_active")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@map("business_type_templates")
 }
 
 // ─── Automation Runs ─────────────────────────────────────────────────────────

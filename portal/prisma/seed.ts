@@ -1,9 +1,23 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import {
+  DENTAL_FIELDS,
+  ROOFING_FIELDS,
+  HVAC_FIELDS,
+  NICHE_SYSTEM_PROMPT_ADDON,
+  buildVapiSchema,
+} from "../lib/niches";
 
 const prisma = new PrismaClient();
 
+const NICHES = [
+  { slug: "DENTAL", displayName: "Dental Practice", fields: DENTAL_FIELDS },
+  { slug: "ROOFING", displayName: "Roofing Contractor", fields: ROOFING_FIELDS },
+  { slug: "HVAC", displayName: "HVAC Service", fields: HVAC_FIELDS },
+];
+
 async function main() {
+  // ── Admin user ─────────────────────────────────────────────────────────────
   const username = process.env.ADMIN_USERNAME ?? "admin";
   const password = process.env.ADMIN_PASSWORD ?? "changeme123";
   const email = process.env.ADMIN_EMAIL ?? "admin@nexus.local";
@@ -11,24 +25,39 @@ async function main() {
   const existing = await prisma.user.findUnique({ where: { username } });
   if (existing) {
     console.log(`Admin user "${username}" already exists — skipping.`);
-    return;
+  } else {
+    const passwordHash = await bcrypt.hash(password, 12);
+    await prisma.user.create({
+      data: { username, email, passwordHash, role: "ADMIN" },
+    });
+    console.log(`✓ Admin user created: ${username}`);
+    console.log(`  Email: ${email}`);
+    console.log(`  Password: ${password}`);
+    console.log(`  → Change this password after first login.`);
   }
 
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  await prisma.user.create({
-    data: {
-      username,
-      email,
-      passwordHash,
-      role: "ADMIN",
-    },
-  });
-
-  console.log(`✓ Admin user created: ${username}`);
-  console.log(`  Email: ${email}`);
-  console.log(`  Password: ${password}`);
-  console.log(`  → Change this password after first login.`);
+  // ── Business type templates ────────────────────────────────────────────────
+  for (const niche of NICHES) {
+    await prisma.businessTypeTemplate.upsert({
+      where: { slug: niche.slug },
+      update: {
+        displayName: niche.displayName,
+        fieldDefinitions: niche.fields as unknown as object[],
+        systemPromptAddon: NICHE_SYSTEM_PROMPT_ADDON[niche.slug],
+        structuredDataSchema: buildVapiSchema(niche.fields),
+        isActive: true,
+      },
+      create: {
+        slug: niche.slug,
+        displayName: niche.displayName,
+        fieldDefinitions: niche.fields as unknown as object[],
+        systemPromptAddon: NICHE_SYSTEM_PROMPT_ADDON[niche.slug],
+        structuredDataSchema: buildVapiSchema(niche.fields),
+        isActive: true,
+      },
+    });
+    console.log(`✓ Business type template seeded: ${niche.slug}`);
+  }
 }
 
 main()
