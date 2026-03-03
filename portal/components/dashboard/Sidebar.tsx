@@ -75,12 +75,9 @@ type IconKey = keyof typeof icons;
 const navItems: { label: string; href: string; icon: IconKey }[] = [
   { label: "Overview",      href: "/dashboard",    icon: "overview"      },
   { label: "Virtual Office",href: "/office",       icon: "office"        },
-  { label: "Calls",         href: "/calls",        icon: "calls"         },
+  { label: "Activity Log",  href: "/activity",     icon: "activity"      },
   { label: "Appointments",  href: "/appointments", icon: "appointments"  },
   { label: "Leads",         href: "/leads",        icon: "leads"         },
-  { label: "Activity Log",  href: "/activity",     icon: "activity"      },
-  { label: "Reports",       href: "/reports",      icon: "reports"       },
-  { label: "Integrations",  href: "/integrations", icon: "integrations"  },
   { label: "Settings",      href: "/settings",     icon: "settings"      },
 ];
 
