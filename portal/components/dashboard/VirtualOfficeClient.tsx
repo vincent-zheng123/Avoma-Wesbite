@@ -284,8 +284,9 @@ export default function VirtualOfficeClient({
                 transition: "filter 0.4s ease",
               }}
             >
-              <svg width="160" height="280" viewBox="0 0 160 280" fill="none" xmlns="http://www.w3.org/2000/svg"
-                style={{ animation: "avatarFloat 3.2s ease-in-out infinite" }}>
+              <svg viewBox="0 0 160 280" fill="none" xmlns="http://www.w3.org/2000/svg"
+                className="w-20 md:w-40"
+                style={{ height: "auto", animation: "avatarFloat 3.2s ease-in-out infinite" }}>
                 <defs>
                   <linearGradient id={`skinG-${skin}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={skinTop}/><stop offset="100%" stopColor={skinBot}/>
