@@ -67,20 +67,7 @@ export async function createVapiAssistant(
           content: systemPrompt,
         },
       ],
-    },
-    voice: {
-      provider: "11labs",
-      voiceId: "bIHbv24MWmeRgasZH58o", // Will — professional, warm
-    },
-    firstMessage: `Thank you for calling ${businessName}! My name is Alex, I'm the AI assistant here. How can I help you today?`,
-    firstMessageMode: "assistant-speaks-first",
-    endCallMessage: "Thank you for calling, we look forward to seeing you. Have a great day!",
-    analysisPlan: {
-      structuredDataSchema,
-      structuredDataPrompt:
-        "Extract the structured data from this call transcript. Fill every field you can determine from the conversation. If a value was not mentioned, omit that field.",
-    },
-    tools: [
+      tools: [
       {
         type: "function",
         function: {
@@ -182,7 +169,20 @@ export async function createVapiAssistant(
         },
         server: { url: toolsWebhookUrl },
       },
-    ],
+      ],
+    },
+    voice: {
+      provider: "11labs",
+      voiceId: "bIHbv24MWmeRgasZH58o", // Will — professional, warm
+    },
+    firstMessage: `Thank you for calling ${businessName}! My name is Alex, I'm the AI assistant here. How can I help you today?`,
+    firstMessageMode: "assistant-speaks-first",
+    endCallMessage: "Thank you for calling, we look forward to seeing you. Have a great day!",
+    analysisPlan: {
+      structuredDataSchema,
+      structuredDataPrompt:
+        "Extract the structured data from this call transcript. Fill every field you can determine from the conversation. If a value was not mentioned, omit that field.",
+    },
     maxDurationSeconds: 600,
     backgroundDenoisingEnabled: true,
     endCallPhrases: ["goodbye", "have a good day", "take care"],

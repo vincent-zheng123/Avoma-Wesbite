@@ -119,6 +119,11 @@ export default function NewClientPage() {
               <label style={labelStyle}>Business Name *</label>
               <input name="businessName" required style={inputStyle} />
             </div>
+            <div className="col-span-2">
+              <label style={labelStyle}>Business Address</label>
+              <input name="businessAddress" placeholder="123 Main St, Austin, TX 78701" style={inputStyle} />
+              <p className="text-xs mt-1" style={{ color: "#6b6b80" }}>Told to callers who ask for your location.</p>
+            </div>
             <div>
               <label style={labelStyle}>Contact Name *</label>
               <input name="contactName" required style={inputStyle} />
@@ -194,6 +199,41 @@ export default function NewClientPage() {
             </div>
           </div>
         </div>
+{/* AI Receptionist */}
+<div className="rounded-2xl border p-6" style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.18)" }}>
+  <h2 className="font-semibold mb-1" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>AI Receptionist</h2>
+  <p className="text-xs mb-4" style={{ color: "#6b6b80" }}>Name, persona, and call behavior. Used directly in the Vapi system prompt.</p>
+  <div className="grid grid-cols-2 gap-4">
+    <div>
+      <label style={labelStyle}>Receptionist Name *</label>
+      <input name="aiName" required placeholder="e.g. Alex, Jordan, Sam" style={inputStyle} />
+      <p className="text-xs mt-1" style={{ color: "#6b6b80" }}>The name the AI introduces itself as on calls.</p>
+    </div>
+    <div>
+      <label style={labelStyle}>Gender</label>
+      <select name="aiGender" style={{ ...inputStyle }}>
+        <option value="neutral">Neutral</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+      <p className="text-xs mt-1" style={{ color: "#6b6b80" }}>Influences pronoun use and Vapi voice selection.</p>
+    </div>
+    <div className="col-span-2">
+      <label style={labelStyle}>Opening Line (First Message)</label>
+      <input
+        name="firstMessage"
+        defaultValue="Thank you for calling, this is {{AI_NAME}}. How can I help you today?"
+        style={inputStyle}
+      />
+      <p className="text-xs mt-1" style={{ color: "#6b6b80" }}>Exact first words spoken when a call connects. Sent to Vapi separately from the system prompt.</p>
+    </div>
+    <div className="col-span-2">
+      <label style={labelStyle}>After-Hours / Emergency Phone *</label>
+      <input name="emergencyPhone" required type="tel" placeholder="+12125551234" style={inputStyle} />
+      <p className="text-xs mt-1" style={{ color: "#6b6b80" }}>Human-answered line. The AI gives this number to callers when the office is closed.</p>
+    </div>
+  </div>
+</div>
 
         {/* Scheduling config */}
         <div className="rounded-2xl border p-6" style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.18)" }}>

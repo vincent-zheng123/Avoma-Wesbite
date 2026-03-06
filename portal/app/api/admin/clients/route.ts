@@ -15,10 +15,11 @@ export async function POST(req: Request) {
   const body = await req.json();
 
   const {
-    businessName, contactName, email, phone, industry, location, plan,
-    monthlyRevenue, calendarId,
-    businessHoursStart, businessHoursEnd, timezone,
-  } = body;
+  businessName, contactName, email, phone, industry, location, plan,
+  monthlyRevenue, calendarId,
+  businessHoursStart, businessHoursEnd, timezone,
+  aiName, aiGender, businessAddress, emergencyPhone, firstMessage,
+} = body;
 
   if (!businessName || !contactName || !email) {
     return NextResponse.json({ error: "Missing required fields: businessName, contactName, email." }, { status: 400 });
@@ -53,6 +54,14 @@ export async function POST(req: Request) {
         plan: plan || "STARTER",
         status: "ACTIVE",
         monthlyRevenue: monthlyRevenue || null,
+        aiName:             aiName             || null,
+        aiGender:           aiGender           || "neutral",
+        businessAddress:    businessAddress    || null,
+        emergencyPhone:     emergencyPhone     || null,
+        firstMessage:       firstMessage       || null,
+        businessHoursStart: businessHoursStart || "9:00 AM",
+        businessHoursEnd:   businessHoursEnd   || "5:00 PM",
+        timezone:           timezone           || "America/New_York",
       },
     });
 

@@ -4,6 +4,12 @@ import {
   DENTAL_FIELDS,
   ROOFING_FIELDS,
   HVAC_FIELDS,
+  MEDICAL_FIELDS,
+  LEGAL_FIELDS,
+  PLUMBING_FIELDS,
+  SALON_SPA_FIELDS,
+  AUTO_REPAIR_FIELDS,
+  VETERINARY_FIELDS,
   NICHE_SYSTEM_PROMPT_ADDON,
   buildVapiSchema,
 } from "../lib/niches";
@@ -11,9 +17,15 @@ import {
 const prisma = new PrismaClient();
 
 const NICHES = [
-  { slug: "DENTAL", displayName: "Dental Practice", fields: DENTAL_FIELDS },
-  { slug: "ROOFING", displayName: "Roofing Contractor", fields: ROOFING_FIELDS },
-  { slug: "HVAC", displayName: "HVAC Service", fields: HVAC_FIELDS },
+  { slug: "DENTAL",     displayName: "Dental Practice",          fields: DENTAL_FIELDS },
+  { slug: "ROOFING",    displayName: "Roofing Contractor",       fields: ROOFING_FIELDS },
+  { slug: "HVAC",       displayName: "HVAC Service",             fields: HVAC_FIELDS },
+  { slug: "MEDICAL",    displayName: "Medical / Healthcare",      fields: MEDICAL_FIELDS },
+  { slug: "LEGAL",      displayName: "Law Firm / Legal Services", fields: LEGAL_FIELDS },
+  { slug: "PLUMBING",   displayName: "Plumbing Service",         fields: PLUMBING_FIELDS },
+  { slug: "SALON_SPA",  displayName: "Salon / Spa",              fields: SALON_SPA_FIELDS },
+  { slug: "AUTO_REPAIR",displayName: "Auto Repair Shop",         fields: AUTO_REPAIR_FIELDS },
+  { slug: "VETERINARY", displayName: "Veterinary Clinic",        fields: VETERINARY_FIELDS },
 ];
 
 async function main() {

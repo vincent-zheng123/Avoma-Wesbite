@@ -155,12 +155,233 @@ export const HVAC_FIELDS: NicheField[] = [
   },
 ];
 
+// ─── Medical ─────────────────────────────────────────────────────────────────
+
+export const MEDICAL_FIELDS: NicheField[] = [
+  {
+    key: "isNewPatient",
+    label: "New Patient?",
+    type: "boolean",
+    description: "Whether the caller is a new or existing patient",
+    askPrompt: "Are you a new patient with us or have you visited before?",
+  },
+  {
+    key: "insuranceProvider",
+    label: "Insurance Provider",
+    type: "string",
+    description: "Name of the caller's medical insurance provider, or 'none' / 'self-pay'",
+    askPrompt: "What insurance do you have, or will you be paying out of pocket?",
+  },
+  {
+    key: "reasonForVisit",
+    label: "Reason for Visit",
+    type: "string",
+    description: "Brief description of why the caller wants to be seen",
+    askPrompt: "Can you tell me briefly what brings you in — what you'd like to be seen for?",
+  },
+  {
+    key: "urgency",
+    label: "Urgency",
+    type: "enum",
+    description: "How urgent the medical need is",
+    enumValues: ["routine", "urgent", "emergency"],
+    askPrompt: "Is this something you'd like to schedule at your convenience, or is it more urgent?",
+  },
+];
+
+// ─── Legal ───────────────────────────────────────────────────────────────────
+
+export const LEGAL_FIELDS: NicheField[] = [
+  {
+    key: "caseType",
+    label: "Case Type",
+    type: "enum",
+    description: "Type of legal matter the caller is inquiring about",
+    enumValues: ["personal_injury", "family_law", "criminal", "business", "estate", "immigration", "other"],
+    askPrompt: "To make sure we connect you with the right attorney — can you give me a brief idea of what type of legal matter this is?",
+  },
+  {
+    key: "isNewClient",
+    label: "New Client?",
+    type: "boolean",
+    description: "Whether the caller is a new or existing client of the firm",
+    askPrompt: "Have you worked with our firm before, or is this your first time reaching out?",
+  },
+  {
+    key: "urgency",
+    label: "Urgency",
+    type: "enum",
+    description: "How time-sensitive the legal matter is",
+    enumValues: ["routine", "time_sensitive", "emergency"],
+    askPrompt: "Is this something that needs to be addressed urgently, or can it be scheduled at a normal pace?",
+  },
+  {
+    key: "referredBy",
+    label: "Referred By",
+    type: "string",
+    description: "How the caller found or was referred to the firm",
+    askPrompt: "How did you hear about us?",
+  },
+];
+
+// ─── Plumbing ─────────────────────────────────────────────────────────────────
+
+export const PLUMBING_FIELDS: NicheField[] = [
+  {
+    key: "address",
+    label: "Service Address",
+    type: "string",
+    description: "Full address where plumbing service is needed",
+    askPrompt: "What's the service address?",
+  },
+  {
+    key: "serviceType",
+    label: "Service Type",
+    type: "enum",
+    description: "Type of plumbing service needed",
+    enumValues: ["repair", "installation", "inspection", "drain_cleaning", "emergency"],
+    askPrompt: "Are you looking for a repair, a new installation, drain cleaning, an inspection, or is this an emergency?",
+  },
+  {
+    key: "issueDescription",
+    label: "Issue Description",
+    type: "string",
+    description: "Brief description of the plumbing issue",
+    askPrompt: "Can you give me a quick description of what's going on?",
+  },
+  {
+    key: "urgency",
+    label: "Urgency",
+    type: "enum",
+    description: "How urgent the plumbing issue is",
+    enumValues: ["routine", "urgent", "no_water", "flooding"],
+    askPrompt: "Is this something that can wait, or is it more urgent — like no water or active flooding?",
+  },
+];
+
+// ─── Salon / Spa ──────────────────────────────────────────────────────────────
+
+export const SALON_SPA_FIELDS: NicheField[] = [
+  {
+    key: "serviceType",
+    label: "Service Type",
+    type: "enum",
+    description: "Type of salon or spa service the caller is requesting",
+    enumValues: ["haircut", "color", "highlights", "blowout", "facial", "massage", "nails", "waxing", "other"],
+    askPrompt: "What service are you looking to book?",
+  },
+  {
+    key: "isNewClient",
+    label: "New Client?",
+    type: "boolean",
+    description: "Whether the caller is a new or returning client",
+    askPrompt: "Have you been in to see us before, or is this your first visit?",
+  },
+  {
+    key: "stylistPreference",
+    label: "Stylist / Staff Preference",
+    type: "string",
+    description: "Whether the caller has a preferred stylist or staff member",
+    askPrompt: "Do you have a preference for a specific stylist, or are you open to whoever's available?",
+  },
+];
+
+// ─── Auto Repair ──────────────────────────────────────────────────────────────
+
+export const AUTO_REPAIR_FIELDS: NicheField[] = [
+  {
+    key: "vehicleMake",
+    label: "Vehicle Make",
+    type: "string",
+    description: "Make of the vehicle needing service (e.g. Toyota, Ford, BMW)",
+    askPrompt: "What's the make of the vehicle — like Toyota, Ford, BMW?",
+  },
+  {
+    key: "vehicleModel",
+    label: "Vehicle Model",
+    type: "string",
+    description: "Model of the vehicle (e.g. Camry, F-150, X5)",
+    askPrompt: "And the model?",
+  },
+  {
+    key: "vehicleYear",
+    label: "Vehicle Year",
+    type: "string",
+    description: "Year of the vehicle",
+    askPrompt: "What year is it?",
+  },
+  {
+    key: "serviceType",
+    label: "Service Type",
+    type: "enum",
+    description: "Type of auto repair or maintenance needed",
+    enumValues: ["oil_change", "brake_service", "tire_service", "transmission", "engine", "diagnostic", "ac_heat", "other"],
+    askPrompt: "What brings the car in — oil change, brakes, tires, something else?",
+  },
+  {
+    key: "urgency",
+    label: "Urgency",
+    type: "enum",
+    description: "How urgent the vehicle issue is",
+    enumValues: ["routine", "urgent", "breakdown"],
+    askPrompt: "Is this routine maintenance, or is the car having trouble right now?",
+  },
+];
+
+// ─── Veterinary ───────────────────────────────────────────────────────────────
+
+export const VETERINARY_FIELDS: NicheField[] = [
+  {
+    key: "petType",
+    label: "Pet Type",
+    type: "enum",
+    description: "Type of pet being brought in",
+    enumValues: ["dog", "cat", "bird", "reptile", "small_animal", "other"],
+    askPrompt: "What type of pet are you bringing in?",
+  },
+  {
+    key: "petName",
+    label: "Pet Name",
+    type: "string",
+    description: "Name of the pet",
+    askPrompt: "What's your pet's name?",
+  },
+  {
+    key: "isNewPatient",
+    label: "New Patient?",
+    type: "boolean",
+    description: "Whether this pet has been seen at the clinic before",
+    askPrompt: "Has your pet been seen with us before, or is this their first visit?",
+  },
+  {
+    key: "reasonForVisit",
+    label: "Reason for Visit",
+    type: "string",
+    description: "Why the pet is being brought in",
+    askPrompt: "What's bringing them in today?",
+  },
+  {
+    key: "urgency",
+    label: "Urgency",
+    type: "enum",
+    description: "How urgent the pet's condition is",
+    enumValues: ["routine", "urgent", "emergency"],
+    askPrompt: "Is this a routine visit or is your pet showing signs that need attention sooner?",
+  },
+];
+
 // ─── Master registry ─────────────────────────────────────────────────────────
 
 export const NICHE_INTEL_FIELDS: Record<string, NicheField[]> = {
   DENTAL: DENTAL_FIELDS,
   ROOFING: ROOFING_FIELDS,
   HVAC: HVAC_FIELDS,
+  MEDICAL: MEDICAL_FIELDS,
+  LEGAL: LEGAL_FIELDS,
+  PLUMBING: PLUMBING_FIELDS,
+  SALON_SPA: SALON_SPA_FIELDS,
+  AUTO_REPAIR: AUTO_REPAIR_FIELDS,
+  VETERINARY: VETERINARY_FIELDS,
 };
 
 // ─── Vapi structuredDataSchema ────────────────────────────────────────────────
@@ -227,11 +448,87 @@ export const NICHE_VAPI_STRUCTURED_SCHEMA: Record<string, object> = {
   DENTAL: buildVapiSchema(DENTAL_FIELDS),
   ROOFING: buildVapiSchema(ROOFING_FIELDS),
   HVAC: buildVapiSchema(HVAC_FIELDS),
+  MEDICAL: buildVapiSchema(MEDICAL_FIELDS),
+  LEGAL: buildVapiSchema(LEGAL_FIELDS),
+  PLUMBING: buildVapiSchema(PLUMBING_FIELDS),
+  SALON_SPA: buildVapiSchema(SALON_SPA_FIELDS),
+  AUTO_REPAIR: buildVapiSchema(AUTO_REPAIR_FIELDS),
+  VETERINARY: buildVapiSchema(VETERINARY_FIELDS),
 };
 
 // ─── Vapi system prompt addon ─────────────────────────────────────────────────
 
 export const NICHE_SYSTEM_PROMPT_ADDON: Record<string, string> = {
+  MEDICAL: `
+INTEL GATHERING — MEDICAL:
+During the conversation, naturally collect the following information before offering to book:
+- Whether they are a new or existing patient
+- Their medical insurance provider (or if self-pay)
+- The reason for their visit (brief description is fine)
+- How urgent it is (routine, urgent, or emergency)
+
+Ask these questions conversationally, not as a checklist. If a caller volunteers the info, do not re-ask.
+After gathering this intel, proceed to offer available appointment times.
+`,
+
+  LEGAL: `
+INTEL GATHERING — LEGAL:
+During the conversation, naturally collect the following information before scheduling a consultation:
+- What type of legal matter they are calling about (personal injury, family law, criminal, business, estate, immigration, or other)
+- Whether they are a new or existing client
+- How time-sensitive the matter is
+- How they heard about the firm
+
+Ask these questions conversationally, not as a checklist. Be sensitive — callers may be in difficult situations.
+After gathering this intel, proceed to schedule a consultation with the appropriate attorney.
+`,
+
+  PLUMBING: `
+INTEL GATHERING — PLUMBING:
+During the conversation, naturally collect the following information before scheduling service:
+- The service address
+- What type of service they need (repair, installation, drain cleaning, inspection, or emergency)
+- A brief description of the issue
+- How urgent it is — especially if there is active flooding or no water
+
+Ask these questions conversationally, not as a checklist. If flooding or no water, treat as emergency priority.
+After gathering this intel, proceed to schedule a service appointment.
+`,
+
+  SALON_SPA: `
+INTEL GATHERING — SALON/SPA:
+During the conversation, naturally collect the following information before booking:
+- What service they are looking for
+- Whether they are a new or returning client
+- Whether they have a preferred stylist or staff member
+
+Ask these questions conversationally, not as a checklist. Keep the tone warm and inviting.
+After gathering this intel, proceed to find available appointment times.
+`,
+
+  AUTO_REPAIR: `
+INTEL GATHERING — AUTO REPAIR:
+During the conversation, naturally collect the following information before scheduling:
+- Vehicle make, model, and year
+- What service or issue they need addressed
+- How urgent it is — especially if the vehicle is not driveable
+
+Ask these questions conversationally, not as a checklist. If the vehicle broke down, treat as high priority.
+After gathering this intel, proceed to schedule a service appointment.
+`,
+
+  VETERINARY: `
+INTEL GATHERING — VETERINARY:
+During the conversation, naturally collect the following information before booking:
+- Type of pet and their name
+- Whether this pet has been seen at the clinic before
+- The reason for the visit
+- How urgent it is — especially if the pet is showing signs of distress
+
+Ask these questions conversationally, not as a checklist. If the pet sounds like they are in distress, treat as urgent and escalate.
+After gathering this intel, proceed to schedule an appointment.
+`,
+
   DENTAL: `
 INTEL GATHERING — DENTAL:
 During the conversation, naturally collect the following information before offering to book:
@@ -327,6 +624,78 @@ export const NICHE_DISPLAY_CONFIG: Record<string, NicheDisplayField[]> = {
       if (f.type === "boolean") return formatBoolean(val);
       if (f.type === "enum") return formatEnum(val);
       if (f.type === "number") return `${val} yrs`;
+      return String(val);
+    },
+  })),
+
+  MEDICAL: MEDICAL_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      return String(val);
+    },
+  })),
+
+  LEGAL: LEGAL_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      return String(val);
+    },
+  })),
+
+  PLUMBING: PLUMBING_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      return String(val);
+    },
+  })),
+
+  SALON_SPA: SALON_SPA_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      return String(val);
+    },
+  })),
+
+  AUTO_REPAIR: AUTO_REPAIR_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
+      return String(val);
+    },
+  })),
+
+  VETERINARY: VETERINARY_FIELDS.map((f) => ({
+    key: f.key,
+    label: f.label,
+    type: f.type,
+    render: (val: unknown) => {
+      if (val === null || val === undefined) return "—";
+      if (f.type === "boolean") return formatBoolean(val);
+      if (f.type === "enum") return formatEnum(val);
       return String(val);
     },
   })),

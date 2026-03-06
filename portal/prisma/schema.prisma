@@ -34,8 +34,14 @@ enum UserRole {
 
 enum IndustryType {
   DENTAL
-  ROOFING
+  MEDICAL
+  LEGAL
+  PLUMBING
   HVAC
+  SALON_SPA
+  AUTO_REPAIR
+  VETERINARY
+  ROOFING
 }
 
 model Client {
@@ -49,6 +55,14 @@ model Client {
   plan           ClientPlan    @default(STARTER)
   status         ClientStatus  @default(ACTIVE)
   monthlyRevenue String?       @map("monthly_revenue")
+  aiName             String?  @map("ai_name")
+  aiGender           String?  @default("neutral") @map("ai_gender")
+  businessAddress    String?  @map("business_address")
+  emergencyPhone     String?  @map("emergency_phone")
+  firstMessage       String?  @map("first_message")
+  businessHoursStart String?  @default("9:00 AM") @map("business_hours_start")
+  businessHoursEnd   String?  @default("5:00 PM") @map("business_hours_end")
+  timezone           String?  @default("America/New_York")
   websiteUrl     String?       @map("website_url")
   websiteStatus  String?       @map("website_status")
   createdAt      DateTime      @default(now()) @map("created_at")
