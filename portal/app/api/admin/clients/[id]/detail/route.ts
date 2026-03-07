@@ -26,6 +26,7 @@ export async function GET(
           outcome: true,
           durationSeconds: true,
           timestamp: true,
+          qualificationData: true,
         },
       },
       appointments: {

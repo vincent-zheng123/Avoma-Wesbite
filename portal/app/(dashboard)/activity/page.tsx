@@ -95,7 +95,23 @@ export default async function ActivityPage() {
   ].sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime()).slice(0, 40);
 
   return (
-    <div className="p-8">
+    <div className="p-8 flex flex-col h-full">
+      {/* Summary badges */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        {[
+          { label: "Calls", count: callLogs.length, color: "#a855f7" },
+          { label: "Appointments", count: appointments.length, color: "#4ade80" },
+          { label: "SMS", count: followups.length, color: "#38bdf8" },
+          { label: "Leads", count: leads.length, color: "#fbbf24" },
+        ].map((b) => (
+          <div key={b.label} className="flex items-center gap-2 px-4 py-2 rounded-xl border" style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.18)" }}>
+            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: b.color }} />
+            <span className="text-xs font-medium" style={{ color: "#6b6b80" }}>{b.label}</span>
+            <span className="text-xs font-bold" style={{ color: b.color }}>{b.count}</span>
+          </div>
+        ))}
+      </div>
+
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-space-grotesk)", color: "#f3f0ff" }}>
           Activity Log
@@ -107,14 +123,19 @@ export default async function ActivityPage() {
 
       {events.length === 0 ? (
         <div
-          className="rounded-2xl border p-12 text-center"
+          className="flex-1 rounded-2xl border flex flex-col items-center justify-center"
           style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.18)" }}
         >
-          <p className="text-4xl mb-3">📋</p>
-          <p className="text-sm" style={{ color: "#a78bfa" }}>No activity yet. Your AI receptionist is ready.</p>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4" style={{ background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)" }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.8" strokeLinecap="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <p className="text-sm font-semibold mb-1" style={{ color: "#f3f0ff" }}>No activity yet</p>
+          <p className="text-xs" style={{ color: "#6b6b80" }}>Calls, appointments, and messages will appear here in real time.</p>
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex-1 flex flex-col">
           {events.map((ev, i) => (
             <div key={ev.id + i} className="flex gap-4 pb-6 relative">
               {/* Vertical line */}

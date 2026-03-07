@@ -208,8 +208,8 @@ enum FollowupStatus {
 
 model Lead {
   id            String     @id @default(cuid())
-  clientId      String     @map("client_id")
-  client        Client     @relation(fields: [clientId], references: [id])
+  clientId      String?    @map("client_id")
+  client        Client?    @relation(fields: [clientId], references: [id])
   businessName  String?    @map("business_name")
   website       String?
   contactName   String?    @map("contact_name")

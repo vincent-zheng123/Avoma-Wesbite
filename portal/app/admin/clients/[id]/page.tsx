@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { NICHE_DISPLAY_CONFIG } from "@/lib/niches";
 
 const statusLabel: Record<string, string> = {
   ACTIVE: "Active",
@@ -54,6 +55,7 @@ type Client = {
     outcome: string;
     durationSeconds: number | null;
     timestamp: string;
+    qualificationData: Record<string, unknown> | null;
   }[];
   appointments: {
     id: string;
@@ -116,6 +118,7 @@ export default function ClientDetailPage() {
   }
 
   const sc = statusColor[client.status] ?? "#a78bfa";
+  const nicheFields = client.industry ? (NICHE_DISPLAY_CONFIG[client.industry] ?? []) : [];
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
@@ -270,10 +273,10 @@ export default function ClientDetailPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b" style={{ borderColor: "rgba(168,85,247,0.1)" }}>
-                {["Caller", "Phone", "Outcome", "Duration", "Date"].map((h) => (
+                {["Caller", "Phone", "Outcome", "Duration", "Date", ...nicheFields.map((f) => f.label)].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wide"
+                    className="text-left px-5 py-3 text-xs font-medium uppercase tracking-wide whitespace-nowrap"
                     style={{ color: "#6b6b80" }}
                   >
                     {h}
@@ -308,6 +311,15 @@ export default function ClientDetailPage() {
                         minute: "2-digit",
                       })}
                     </td>
+                    {nicheFields.map((field) => {
+                      const raw = call.qualificationData?.[field.key] ?? null;
+                      const display = field.render(raw);
+                      return (
+                        <td key={field.key} className="px-5 py-3 text-xs whitespace-nowrap" style={{ color: raw != null ? "#f3f0ff" : "#3a3a50" }}>
+                          {display}
+                        </td>
+                      );
+                    })}
                   </tr>
                 );
               })}

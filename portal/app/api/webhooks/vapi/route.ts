@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
+import twilio from "twilio";
 
 /**
  * POST /api/webhooks/vapi
@@ -173,7 +174,7 @@ export async function POST(req: Request) {
     }
   }
 
-  // 6. Queue SMS follow-up if template configured
+  // 6. Send SMS follow-up if template configured
   if (
     config.twilioFromNumber &&
     config.followupSmsTemplate &&
@@ -184,7 +185,7 @@ export async function POST(req: Request) {
       .replace("{caller_name}", callerName ?? "there")
       .replace("{business_name}", config.client.businessName);
 
-    await prisma.followup.create({
+    const followup = await prisma.followup.create({
       data: {
         clientId,
         callLogId: callLog.id,
@@ -193,6 +194,32 @@ export async function POST(req: Request) {
         status: "PENDING",
       },
     });
+
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+    if (accountSid && authToken) {
+      try {
+        const twilioClient = twilio(accountSid, authToken);
+        const msg = await twilioClient.messages.create({
+          body: messageBody,
+          from: config.twilioFromNumber,
+          to: fromNumber,
+        });
+        await prisma.followup.update({
+          where: { id: followup.id },
+          data: { status: "SENT", twilioSid: msg.sid, sentAt: new Date() },
+        });
+      } catch (err) {
+        console.error("[vapi-webhook] Twilio SMS failed:", err);
+        await prisma.followup.update({
+          where: { id: followup.id },
+          data: { status: "FAILED" },
+        });
+      }
+    } else {
+      console.warn("[vapi-webhook] TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN not set — SMS skipped");
+    }
   }
 
   // 7. Log automation run
