@@ -34,7 +34,8 @@ export async function POST(req: NextRequest) {
 
   const lead = await prisma.lead.create({
     data: {
-      clientId: null,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      clientId: null as any,
       businessName,
       contactName: contactName || null,
       contactEmail: contactEmail || null,
