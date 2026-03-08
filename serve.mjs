@@ -177,7 +177,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Static file server
-  const filePath = path.join(__dirname, urlPath === '/' ? '/index.html' : urlPath);
+  const resolvedPath = urlPath === '/start' ? '/start.html' : urlPath;
+  const filePath = path.join(__dirname, resolvedPath === '/' ? '/index.html' : resolvedPath);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME[ext] || 'application/octet-stream';
 
