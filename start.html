@@ -151,6 +151,44 @@
     }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
 
+    /* ── Shutter text animation (panel-heading) ── */
+    .shutter-char { position:relative; display:inline-block; overflow:hidden; }
+    .shutter-base {
+      display:block;
+      animation:sBase 0.9s cubic-bezier(0.16,1,0.3,1) both;
+      animation-delay:calc(var(--ci) * 0.052s + 0.1s);
+    }
+    .panel-heading .shutter-base {
+      background:linear-gradient(135deg,#f3f0ff 0%,#a78bfa 55%,#e879f9 100%);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .shutter-slice {
+      position:absolute; inset:0; display:block; pointer-events:none;
+      animation-fill-mode:both; white-space:pre;
+    }
+    .shutter-slice-top {
+      clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+      color:#7c3aed; -webkit-text-fill-color:#7c3aed;
+      animation:sLR 0.6s ease-in-out both;
+      animation-delay:calc(var(--ci) * 0.052s);
+    }
+    .shutter-slice-mid {
+      clip-path:polygon(0 35%,100% 35%,100% 65%,0 65%);
+      color:#a78bfa; -webkit-text-fill-color:#a78bfa;
+      animation:sRL 0.6s ease-in-out both;
+      animation-delay:calc(var(--ci) * 0.052s + 0.08s);
+    }
+    .shutter-slice-bot {
+      clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);
+      color:#e879f9; -webkit-text-fill-color:#e879f9;
+      animation:sLR 0.6s ease-in-out both;
+      animation-delay:calc(var(--ci) * 0.052s + 0.16s);
+    }
+    @keyframes sBase { 0%{opacity:0;filter:blur(10px);} 100%{opacity:1;filter:blur(0);} }
+    @keyframes sLR   { 0%{transform:translateX(-110%);opacity:0;} 15%{opacity:1;} 85%{opacity:1;} 100%{transform:translateX(110%);opacity:0;} }
+    @keyframes sRL   { 0%{transform:translateX(110%);opacity:0;} 15%{opacity:1;} 85%{opacity:1;} 100%{transform:translateX(-110%);opacity:0;} }
+
+
     .panel-heading {
       font-family: 'Orbitron', sans-serif;
       font-size: clamp(2rem, 3.2vw, 3rem);
@@ -667,6 +705,44 @@
 </div><!-- /split -->
 
 <script>
+  /* ── Panel Heading Shutter ── */
+  (function() {
+    var heading = document.querySelector('.panel-heading');
+    if (!heading) return;
+    var ci = 0;
+    function makeChar(ch) {
+      var wrap = document.createElement('span');
+      wrap.className = 'shutter-char';
+      wrap.style.setProperty('--ci', ci++);
+      var base = document.createElement('span');
+      base.className = 'shutter-base';
+      base.textContent = ch;
+      wrap.appendChild(base);
+      ['top','mid','bot'].forEach(function(t) {
+        var sl = document.createElement('span');
+        sl.className = 'shutter-slice shutter-slice-' + t;
+        sl.textContent = ch;
+        wrap.appendChild(sl);
+      });
+      return wrap;
+    }
+    var frag = document.createDocumentFragment();
+    Array.from(heading.childNodes).forEach(function(node) {
+      if (node.nodeType === 3) {
+        node.textContent.split('').forEach(function(ch) {
+          if (ch === ' ' || ch === '\n') { frag.appendChild(document.createTextNode(ch)); }
+          else { frag.appendChild(makeChar(ch)); }
+        });
+      } else if (node.nodeName === 'BR') {
+        frag.appendChild(document.createElement('br'));
+      } else {
+        frag.appendChild(node.cloneNode(true));
+      }
+    });
+    heading.innerHTML = '';
+    heading.appendChild(frag);
+  })();
+
   const form = document.getElementById('intake-form');
   const formWrap = document.getElementById('form-wrap');
   const successPanel = document.getElementById('success-panel');
