@@ -34,7 +34,11 @@ export default function IntegrationsPage() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!session?.user?.clientId) return;
+    if (!session) return;
+    if (!session.user?.clientId) {
+      setCalendarConnected(false);
+      return;
+    }
     fetch("/api/integrations/google-calendar/status")
       .then((r) => r.json())
       .then((d) => setCalendarConnected(d.connected ?? false))
