@@ -61,7 +61,7 @@ export async function POST(req: Request) {
   // Store lead — clientId is null for NEXUS's own intake leads
   await prisma.lead.create({
     data: {
-      clientId: null,
+      clientId: undefined,
       contactName,
       contactEmail: email,
       contactPhone: normalizedPhone,
