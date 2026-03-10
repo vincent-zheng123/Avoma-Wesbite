@@ -10,10 +10,22 @@ export async function GET() {
   }
 
   const leads = await prisma.lead.findMany({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    where: { clientId: null as any },
+    where: { clientId: null },
     orderBy: { createdAt: "desc" },
     take: 200,
+    select: {
+      id: true,
+      businessName: true,
+      contactName: true,
+      contactEmail: true,
+      contactPhone: true,
+      industry: true,
+      location: true,
+      source: true,
+      icpScore: true,
+      status: true,
+      createdAt: true,
+    },
   });
 
   return NextResponse.json(leads);
@@ -34,8 +46,7 @@ export async function POST(req: NextRequest) {
 
   const lead = await prisma.lead.create({
     data: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      clientId: null as any,
+      clientId: null,
       businessName,
       contactName: contactName || null,
       contactEmail: contactEmail || null,
