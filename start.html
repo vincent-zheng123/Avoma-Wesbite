@@ -25,6 +25,10 @@
     html { scroll-behavior: smooth; }
     body {
       background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, rgba(168,85,247,0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(168,85,247,0.045) 1px, transparent 1px);
+      background-size: 48px 48px;
       color: var(--text);
       font-family: 'Inter', sans-serif;
       line-height: 1.75;
@@ -40,11 +44,12 @@
       background-size: 200px 200px;
     }
 
-    /* ── Full-screen two-column layout ── */
+    /* ── Layout ── */
     .split {
       display: grid;
       grid-template-columns: 1fr 1fr;
       min-height: 100vh;
+      align-items: stretch;
     }
 
     /* ─── LEFT PANEL ─── */
@@ -55,8 +60,7 @@
       display: flex;
       flex-direction: column;
       padding: 48px 56px;
-      background: var(--surface);
-      border-right: 1px solid rgba(168,85,247,0.12);
+      background: transparent;
       overflow: hidden;
     }
 
@@ -86,17 +90,6 @@
       pointer-events: none;
     }
 
-    /* Subtle grid pattern */
-    .left-grid {
-      position: absolute;
-      inset: 0;
-      opacity: 0.04;
-      background-image:
-        linear-gradient(to right, #a855f7 1px, transparent 1px),
-        linear-gradient(to bottom, #a855f7 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-    }
 
     /* Nav inside left panel */
     .panel-nav {
@@ -260,13 +253,22 @@
     }
     .badge svg { color: var(--mid); flex-shrink: 0; }
 
-    /* ─── RIGHT PANEL ─── */
+    /* ─── RIGHT PANEL — the card ─── */
     .right-panel {
       padding: 56px 56px 56px 48px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
+      background: rgba(13,10,26,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin: 40px 48px 40px 0;
+      border-radius: 20px;
+      border: 1px solid rgba(168,85,247,0.18);
+      box-shadow:
+        0 0 0 1px rgba(124,58,237,0.06),
+        0 8px 48px rgba(0,0,0,0.5),
+        0 0 80px rgba(124,58,237,0.1);
     }
 
     .form-header {
@@ -411,7 +413,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      min-height: 100vh;
+      min-height: 100%;
       padding: 56px;
     }
     .success-wrap.visible { display: flex; }
@@ -446,16 +448,21 @@
 
     /* Mobile */
     @media (max-width: 900px) {
-      .split { grid-template-columns: 1fr; }
+      .split { grid-template-columns: 1fr; min-height: auto; padding: 0 12px; }
       .left-panel {
         position: static; height: auto;
-        padding: 36px 28px 40px;
+        padding: 36px 16px 32px;
       }
       .left-panel::before, .left-panel::after { display: none; }
       .left-content { padding-bottom: 0; }
       .panel-heading { font-size: 1.8rem; }
       .steps { display: none; }
-      .right-panel { padding: 40px 28px 56px; justify-content: flex-start; min-height: auto; }
+      .right-panel {
+        margin: 0 0 32px;
+        border-radius: 14px;
+        padding: 40px 28px 56px;
+        justify-content: flex-start;
+      }
       .form-row { grid-template-columns: 1fr; }
       .service-grid { grid-template-columns: 1fr; }
       .submit-area { flex-direction: column-reverse; align-items: stretch; }
@@ -470,8 +477,6 @@
 
   <!-- ─── LEFT PANEL ─── -->
   <div class="left-panel">
-    <div class="left-grid"></div>
-
     <div class="panel-nav">
       <a href="/" class="brand">
         <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
@@ -768,7 +773,7 @@
     }
   }
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     let valid = true;
     requiredFields.forEach(function(f) {
@@ -780,12 +785,36 @@
     submitBtn.disabled = true;
     submitBtn.innerHTML = 'Submitting…';
 
-    setTimeout(function() {
-      formWrap.style.display = 'none';
-      successPanel.classList.add('visible');
-    }, 800);
+    try {
+      const payload = {
+        first_name:     document.getElementById('fname').value.trim(),
+        last_name:      document.getElementById('lname').value.trim(),
+        email:          document.getElementById('email').value.trim(),
+        phone:          document.getElementById('phone').value.trim(),
+        business_name:  document.getElementById('biz-name').value.trim(),
+        industry:       document.getElementById('industry').value.trim(),
+        location:       document.getElementById('location').value.trim(),
+        monthly_volume: document.getElementById('call-volume').value,
+        service_type:   Array.from(document.querySelectorAll('input[name="service"]:checked')).map(function(el) { return el.value; }).join(', '),
+        notes:          document.getElementById('message').value.trim(),
+      };
+
+      await fetch('https://app.vincentbuildsai.cloud/api/webhooks/nexus-intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (_) {
+      // Non-blocking — show success regardless
+    }
+
+    formWrap.style.display = 'none';
+    successPanel.classList.add('visible');
   });
 </script>
+
+
+
 
 </body>
 </html>
