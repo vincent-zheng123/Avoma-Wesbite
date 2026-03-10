@@ -10,7 +10,6 @@ export async function GET() {
   }
 
   const leads = await prisma.lead.findMany({
-    where: { clientId: { equals: null } },
     orderBy: { createdAt: "desc" },
     take: 200,
     select: {
