@@ -47,7 +47,7 @@ type Client = {
   plan: string;
   status: string;
   createdAt: string;
-  config: { vapiPhoneNumber: string; active: boolean } | null;
+  config: { vapiPhoneNumber: string; active: boolean; calendarType: string | null; calendarId: string | null; calendarRefreshToken: string | null } | null;
   callLogs: {
     id: string;
     callerName: string | null;
@@ -72,13 +72,19 @@ export default function ClientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [statusUpdating, setStatusUpdating] = useState(false);
   const [error, setError] = useState("");
+  const [calConnected, setCalConnected] = useState(false);
+  const [calendarId, setCalendarId] = useState("");
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}/detail`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setError(data.error);
-        else setClient(data);
+        else {
+          setClient(data);
+          setCalConnected(!!data.config?.calendarRefreshToken);
+          setCalendarId(data.config?.calendarId ?? "");
+        }
       })
       .catch(() => setError("Failed to load client."))
       .finally(() => setLoading(false));
@@ -184,7 +190,7 @@ export default function ClientDetailPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-4 gap-6 mb-8">
         {/* Contact card */}
         <div
           className="rounded-2xl border p-6"
@@ -214,6 +220,37 @@ export default function ClientDetailPage() {
                 <p className="text-sm font-medium mt-0.5" style={{ color: "#f3f0ff" }}>{value}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Calendar */}
+        <div className="rounded-2xl border p-6" style={{ background: "#0d0a1a", borderColor: calConnected ? "rgba(74,222,128,0.25)" : "rgba(239,68,68,0.2)" }}>
+          <h2 className="text-xs font-medium uppercase tracking-widest mb-4" style={{ color: "#6b6b80" }}>Google Calendar</h2>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full flex-shrink-0" style={{ background: calConnected ? "#4ade80" : "#f87171" }} />
+              <span className="text-sm font-medium" style={{ color: calConnected ? "#4ade80" : "#f87171" }}>
+                {calConnected ? "Connected" : "Not Connected"}
+              </span>
+            </div>
+            {calConnected && calendarId && (
+              <div>
+                <p className="text-xs" style={{ color: "#6b6b80" }}>Calendar</p>
+                <p className="text-sm font-mono mt-0.5 truncate" style={{ color: "#a78bfa" }}>{calendarId}</p>
+              </div>
+            )}
+            <p className="text-xs leading-relaxed" style={{ color: "#6b6b80" }}>
+              {calConnected
+                ? "AI can book appointments directly into this calendar on calls."
+                : "Connect calendar so the AI can book appointments automatically on calls."}
+            </p>
+            <a
+              href={"/api/admin/clients/" + id + "/google-calendar/connect"}
+              className="block text-xs font-semibold px-3 py-2 rounded-lg text-center"
+              style={{ background: calConnected ? "rgba(74,222,128,0.08)" : "rgba(96,165,250,0.18)", color: calConnected ? "#4ade80" : "#60a5fa", border: "1px solid " + (calConnected ? "rgba(74,222,128,0.25)" : "rgba(96,165,250,0.25)") }}
+            >
+              {calConnected ? "Reconnect Calendar" : "Connect Google Calendar"}
+            </a>
           </div>
         </div>
 

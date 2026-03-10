@@ -15,7 +15,15 @@ export async function GET(
   const client = await prisma.client.findUnique({
     where: { id: params.id },
     include: {
-      config: { select: { vapiPhoneNumber: true, active: true } },
+      config: {
+        select: {
+          vapiPhoneNumber: true,
+          active: true,
+          calendarType: true,
+          calendarId: true,
+          calendarRefreshToken: true,
+        },
+      },
       callLogs: {
         orderBy: { timestamp: "desc" },
         take: 20,
