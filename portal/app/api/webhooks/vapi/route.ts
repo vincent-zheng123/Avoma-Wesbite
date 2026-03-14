@@ -233,5 +233,35 @@ export async function POST(req: Request) {
     },
   });
 
+  // 8. Trigger inbound-lead-capture n8n workflow (async — fire and forget)
+  //    Handles Claude intent scoring + scheduled_followups
+  const n8nWebhookUrl = process.env.N8N_INBOUND_LEAD_CAPTURE_URL ??
+    "http://76.13.111.46:32771/webhook/inbound-lead-capture";
+
+  const transcript: string =
+    (message.artifact?.transcript as string) ??
+    (message.artifact?.messages as Array<{role:string;message:string}>|undefined)
+      ?.map((m) => `${m.role}: ${m.message}`)
+      .join("\n") ?? "";
+
+  fetch(n8nWebhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      clientId,
+      callerPhone: fromNumber,
+      callerName: callerName ?? "",
+      transcript,
+      qualificationData: qualificationData ?? {},
+      clientConfig: {
+        client_id: config.clientId,
+        timezone: config.timezone,
+        twilio_from_number: config.twilioFromNumber,
+      },
+    }),
+  }).catch((err) =>
+    console.error("[vapi-webhook] inbound-lead-capture call failed:", err)
+  );
+
   return NextResponse.json({ received: true, callLogId: callLog.id, clientId, outcome });
 }
