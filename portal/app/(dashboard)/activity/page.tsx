@@ -36,7 +36,7 @@ export default async function ActivityPage() {
   const clientId = await getEffectiveClientId(user);
   if (!clientId) redirect("/admin");
 
-  const [callLogs, appointments, followups, leads] = await Promise.all([
+  const [callLogs, appointments, followups, leads, configRow] = await Promise.all([
     prisma.callLog.findMany({
       where: { clientId },
       orderBy: { timestamp: "desc" },
@@ -57,7 +57,9 @@ export default async function ActivityPage() {
       orderBy: { createdAt: "desc" },
       take: 10,
     }),
+    prisma.clientConfig.findUnique({ where: { clientId }, select: { timezone: true } }),
   ]);
+  const tz = configRow?.timezone ?? "America/New_York";
 
   const events: TimelineEvent[] = [
     ...callLogs.map((c) => ({
@@ -72,7 +74,7 @@ export default async function ActivityPage() {
       id: a.id,
       type: "appointment" as const,
       label: `Appointment ${a.status.toLowerCase().replace(/_/g, " ")} — ${a.callerName ?? a.callerPhone}`,
-      sublabel: a.scheduledAt.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
+      sublabel: a.scheduledAt.toLocaleDateString("en-US", { timeZone: tz, weekday: "short", month: "short", day: "numeric" }) + " " + a.scheduledAt.toLocaleTimeString("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }),
       ts: a.createdAt,
       color: a.status === "CONFIRMED" ? "#4ade80" : a.status === "CANCELLED" ? "#f87171" : "#fbbf24",
     })),
@@ -160,6 +162,7 @@ export default async function ActivityPage() {
                 )}
                 <p className="text-xs mt-1" style={{ color: "#a78bfa" }}>
                   {new Date(ev.ts).toLocaleString("en-US", {
+                    timeZone: tz,
                     month: "short", day: "numeric", year: "numeric",
                     hour: "numeric", minute: "2-digit",
                   })}
