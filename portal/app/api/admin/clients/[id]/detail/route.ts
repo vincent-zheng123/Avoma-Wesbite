@@ -12,47 +12,50 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const client = await prisma.client.findUnique({
-    where: { id: params.id },
-    include: {
-      config: {
-        select: {
-          vapiPhoneNumber: true,
-          active: true,
-          calendarType: true,
-          calendarId: true,
-          calendarRefreshToken: true,
+  const [client, appointments] = await Promise.all([
+    prisma.client.findUnique({
+      where: { id: params.id },
+      include: {
+        config: {
+          select: {
+            vapiPhoneNumber: true,
+            active: true,
+            calendarType: true,
+            calendarId: true,
+            calendarRefreshToken: true,
+          },
+        },
+        callLogs: {
+          orderBy: { timestamp: "desc" },
+          take: 20,
+          select: {
+            id: true,
+            callerName: true,
+            callerPhone: true,
+            outcome: true,
+            durationSeconds: true,
+            timestamp: true,
+            qualificationData: true,
+          },
         },
       },
-      callLogs: {
-        orderBy: { timestamp: "desc" },
-        take: 20,
-        select: {
-          id: true,
-          callerName: true,
-          callerPhone: true,
-          outcome: true,
-          durationSeconds: true,
-          timestamp: true,
-          qualificationData: true,
-        },
+    }),
+    prisma.appointment.findMany({
+      where: { clientId: params.id },
+      orderBy: { scheduledAt: "asc" },
+      select: {
+        id: true,
+        callerName: true,
+        callerPhone: true,
+        scheduledAt: true,
+        status: true,
       },
-      appointments: {
-        orderBy: { scheduledAt: "asc" },
-        select: {
-          id: true,
-          callerName: true,
-          callerPhone: true,
-          scheduledAt: true,
-          status: true,
-        },
-      },
-    },
-  });
+    }),
+  ]);
 
   if (!client) {
     return NextResponse.json({ error: "Client not found" }, { status: 404 });
   }
 
-  return NextResponse.json(client);
+  return NextResponse.json({ ...client, appointments });
 }
