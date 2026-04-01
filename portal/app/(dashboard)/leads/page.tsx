@@ -189,7 +189,6 @@ export default async function LeadsPage() {
           {leads.length > 0 && (
             <tbody>
               {leads.map((lead) => {
-                const color = leadStatusColor[lead.status] ?? "#a78bfa";
                 const qData = lead.qualificationData as Prisma.JsonObject | null;
 
                 return (
