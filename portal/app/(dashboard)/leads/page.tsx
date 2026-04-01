@@ -164,8 +164,8 @@ export default async function LeadsPage() {
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
           { label: "Total Clients", value: leads.length, color: "#a855f7" },
-          { label: "Active", value: leads.filter((l) => l.status === "NEW" || l.status === "CONTACTED").length, color: "#4ade80" },
-          { label: "Converted", value: leads.filter((l) => l.status === "CONVERTED").length, color: "#38bdf8" },
+          { label: "In Pipeline", value: leads.filter((l) => l.status === "CONVERTED").length, color: "#4ade80" },
+          { label: "Booked", value: leads.filter((l) => l.status === "BOOKED").length, color: "#38bdf8" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border p-4" style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.18)" }}>
             <p className="text-2xl font-black mb-0.5" style={{ fontFamily: "var(--font-orbitron)", color: s.color }}>{s.value}</p>

@@ -58,8 +58,9 @@ model Client {
   aiName             String?  @map("ai_name")
   aiGender           String?  @default("neutral") @map("ai_gender")
   businessAddress    String?  @map("business_address")
-  emergencyPhone     String?  @map("emergency_phone")
-  firstMessage       String?  @map("first_message")
+  emergencyPhone       String?  @map("emergency_phone")
+  clientBusinessPhone  String?  @map("client_business_phone")
+  firstMessage         String?  @map("first_message")
   businessHoursStart String?  @default("9:00 AM") @map("business_hours_start")
   businessHoursEnd   String?  @default("5:00 PM") @map("business_hours_end")
   timezone           String?  @default("America/New_York")
@@ -164,6 +165,7 @@ model Appointment {
   calendarType    String?           @map("calendar_type")
   appointmentType String?           @map("appointment_type")
   status          AppointmentStatus @default(PENDING_CONFIRMATION)
+  address         String?
   reminderSent    Boolean           @default(false) @map("reminder_sent")
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
@@ -241,6 +243,7 @@ enum LeadStatus {
   FOLLOW_UP_2
   SEQUENCE_COMPLETE
   CONVERTED
+  BOOKED
   NOT_QUALIFIED
 }
 
