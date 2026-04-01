@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { getNicheDisplayFields } from "@/lib/niches";
 import type { Prisma } from "@prisma/client";
 import { getEffectiveClientId } from "@/lib/getClientId";
+import { LeadStatusBadge } from "./LeadStatusBadge";
 
 const leadStatusColor: Record<string, string> = {
   NEW: "#a78bfa",
@@ -202,9 +203,7 @@ export default async function LeadsPage() {
                     <td className="px-5 py-3.5 whitespace-nowrap" style={{ color: "#a78bfa" }}>{lead.contactPhone ?? "—"}</td>
                     <td className="px-5 py-3.5 text-xs" style={{ color: "#6b6b80" }}>{lead.source ?? "—"}</td>
                     <td className="px-5 py-3.5">
-                      <span className="text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap" style={{ background: `${color}18`, color }}>
-                        {lead.status === "CONVERTED" ? "in pipeline" : lead.status === "BOOKED" ? "booked" : lead.status.replace(/_/g, " ").toLowerCase()}
-                      </span>
+                      <LeadStatusBadge leadId={lead.id} initialStatus={lead.status} />
                     </td>
                     <td className="px-5 py-3.5 text-xs whitespace-nowrap" style={{ color: "#6b6b80" }}>
                       {lead.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
