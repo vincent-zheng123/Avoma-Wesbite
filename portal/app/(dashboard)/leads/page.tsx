@@ -7,15 +7,6 @@ import type { Prisma } from "@prisma/client";
 import { getEffectiveClientId } from "@/lib/getClientId";
 import { LeadStatusBadge } from "./LeadStatusBadge";
 
-const leadStatusColor: Record<string, string> = {
-  NEW: "#a78bfa",
-  CONTACTED: "#38bdf8",
-  FOLLOW_UP_1: "#fbbf24",
-  FOLLOW_UP_2: "#fb923c",
-  SEQUENCE_COMPLETE: "#94a3b8",
-  CONVERTED: "#4ade80",
-  NOT_QUALIFIED: "#f87171",
-};
 
 const planColor: Record<string, string> = {
   STARTER: "#a78bfa",
