@@ -23,7 +23,7 @@ export default async function AppointmentsPage() {
   const [appointments, clientRow, configRow] = await Promise.all([
     prisma.appointment.findMany({
       where: { clientId },
-      orderBy: { scheduledAt: "desc" },
+      orderBy: { scheduledAt: "asc" },
       take: 50,
     }),
     prisma.client.findUnique({
