@@ -199,7 +199,7 @@ export default function CalendarPage() {
                   const startTime = formatTime(event.start.dateTime);
                   const endTime = formatTime(event.end.dateTime);
                   const isAIBooked = (event.summary ?? "").toLowerCase().includes("appointment") ||
-                    (event.description ?? "").toLowerCase().includes("nexus");
+                    (event.description ?? "").toLowerCase().includes("avoma");
 
                   return (
                     <div

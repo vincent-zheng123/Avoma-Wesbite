@@ -32,7 +32,7 @@ async function main() {
   // ── Admin user ─────────────────────────────────────────────────────────────
   const username = process.env.ADMIN_USERNAME ?? "admin";
   const password = process.env.ADMIN_PASSWORD ?? "changeme123";
-  const email = process.env.ADMIN_EMAIL ?? "admin@nexus.local";
+  const email = process.env.ADMIN_EMAIL ?? "admin@avoma.local";
 
   const existing = await prisma.user.findUnique({ where: { username } });
   if (existing) {

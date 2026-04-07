@@ -1,5 +1,5 @@
 # CLAUDE.md — Frontend Website Rules
-## NEXUS_WEBSITE · Brand Site & Client Dashboard
+## AVOMA_WEBSITE · Brand Site & Client Dashboard
 
 ---
 
@@ -11,10 +11,10 @@
 ## What This Folder Contains
 
 This folder contains two things:
-1. **The NEXUS public-facing brand website** — the marketing site live at **vincentbuildsai.cloud** that prospects and clients land on
+1. **The AVOMA public-facing brand website** — the marketing site live at **vincentbuildsai.cloud** that prospects and clients land on
 2. **The client CRM dashboard** — the Next.js portal where clients log in to view their AI receptionist activity
 
-> **This folder is separate from `NEXUS_CL_WEBSITE/`** which contains websites built *for* clients. Never mix NEXUS brand files with client deliverable files.
+> **This folder is separate from `AVOMA_CL_WEBSITE/`** which contains websites built *for* clients. Never mix AVOMA brand files with client deliverable files.
 
 Full CRM portal architecture (auth, API routes, database queries, Docker deployment) is defined in `CLAUDE-CRM.md` within this folder.
 
@@ -36,7 +36,7 @@ Full CRM portal architecture (auth, API routes, database queries, Docker deploym
 ---
 
 ## Screenshot Workflow
-- Puppeteer is installed at `D:/NEXUSHUB/NEXUS_WEBSITE/node_modules/puppeteer/`. Chrome cache is at `C:/Users/zheng/.cache/puppeteer/`.
+- Puppeteer is installed at `D:/D:/AVOMAHUB/AVOMA_WEBSITE/node_modules/puppeteer/`. Chrome cache is at `C:/Users/zheng/.cache/puppeteer/`.
 - **Always screenshot from localhost:** `node screenshot.mjs http://localhost:3000`
 - Screenshots are saved automatically to `./temporary screenshots/screenshot-N.png` (auto-incremented, never overwritten).
 - Optional label suffix: `node screenshot.mjs http://localhost:3000 label` → saves as `screenshot-N-label.png`
@@ -63,7 +63,7 @@ Full CRM portal architecture (auth, API routes, database queries, Docker deploym
 ---
 
 ## Anti-Generic Guardrails
-- **Colors:** Never use default Tailwind palette (indigo-500, blue-600, etc.). Use NEXUS brand colors from `brand_assets/`.
+- **Colors:** Never use default Tailwind palette (indigo-500, blue-600, etc.). Use AVOMA brand colors from `brand_assets/`.
 - **Shadows:** Never use flat `shadow-md`. Use layered, color-tinted shadows with low opacity.
 - **Typography:** Never use the same font for headings and body. Pair a display/serif with a clean sans. Apply tight tracking (`-0.03em`) on large headings, generous line-height (`1.7`) on body.
 - **Gradients:** Layer multiple radial gradients. Add grain/texture via SVG noise filter for depth.
@@ -81,8 +81,8 @@ Full CRM portal architecture (auth, API routes, database queries, Docker deploym
 - Do not stop after one screenshot pass
 - Do not use `transition-all`
 - Do not use default Tailwind blue/indigo as primary color
-- Do not edit or deploy anything from `NEXUS_CL_WEBSITE/` from within this folder
+- Do not edit or deploy anything from `AVOMA_CL_WEBSITE/` from within this folder
 
 ---
 
-*Last updated: 2026-02-27 · NEXUS · NEXUS_WEBSITE*
+*Last updated: 2026-02-27 · AVOMA · AVOMA_WEBSITE*

@@ -1,5 +1,5 @@
 -- ============================================================
--- NEXUS — Supabase Row Level Security Policies
+-- AVOMA — Supabase Row Level Security Policies
 -- ============================================================
 -- Run this in the Supabase SQL Editor AFTER the Prisma
 -- migration has been applied (npx prisma migrate dev).

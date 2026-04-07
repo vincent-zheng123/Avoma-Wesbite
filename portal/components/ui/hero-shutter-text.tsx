@@ -11,7 +11,7 @@ interface HeroShutterTextProps {
 }
 
 export default function HeroShutterText({
-  text = "NEXUS",
+  text = "AVOMA",
   className = "",
 }: HeroShutterTextProps) {
   const [count, setCount] = useState(0);

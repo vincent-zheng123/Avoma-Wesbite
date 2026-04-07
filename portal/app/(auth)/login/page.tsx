@@ -37,7 +37,7 @@ export default function LoginPage() {
 
       {/* Left — shutter animation panel (hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 relative" style={{ borderRight: "1px solid rgba(168,85,247,0.12)" }}>
-        <HeroShutterText text="NEXUS" className="w-full h-full" />
+        <HeroShutterText text="AVOMA" className="w-full h-full" />
       </div>
 
       {/* Right — login form */}
@@ -69,7 +69,7 @@ export default function LoginPage() {
                 </g>
               </svg>
               <span className="text-2xl font-black tracking-widest" style={{ fontFamily: "var(--font-orbitron)", background: "linear-gradient(135deg, #a855f7, #e879f9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                NEXUS
+                AVOMA
               </span>
             </div>
             <p className="text-sm" style={{ color: "#a78bfa" }}>Client Portal</p>

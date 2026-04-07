@@ -66,7 +66,7 @@ export default async function SettingsPage() {
             ))}
           </div>
           <p className="text-xs mt-4" style={{ color: "#6b6b80" }}>
-            To change your AI configuration, contact your Nexus account manager.
+            To change your AI configuration, contact your Avoma account manager.
           </p>
         </div>
       )}

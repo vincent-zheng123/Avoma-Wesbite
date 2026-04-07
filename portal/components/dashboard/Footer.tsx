@@ -18,7 +18,7 @@ function Footer() {
       title: "Support",
       links: [
         { label: "Help Center", href: "#" },
-        { label: "Contact Us", href: "mailto:hello@vincentbuildsai.cloud" },
+        { label: "Contact Us", href: "mailto:contact@callavoma.com" },
         {
           label: "System Status",
           href: "#",
@@ -31,8 +31,8 @@ function Footer() {
   const contactInfo = [
     {
       icon: <Mail size={16} className="text-[#a855f7]" />,
-      text: "hello@vincentbuildsai.cloud",
-      href: "mailto:hello@vincentbuildsai.cloud",
+      text: "contact@callavoma.com",
+      href: "mailto:contact@callavoma.com",
     },
     {
       icon: <Globe size={16} className="text-[#a855f7]" />,
@@ -67,7 +67,7 @@ function Footer() {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                NEXUS
+                AVOMA
               </span>
             </div>
             <p className="text-sm leading-relaxed text-[#6b6b80]">
@@ -142,14 +142,14 @@ function Footer() {
             ))}
           </div>
           <p className="text-[#6b6b80] text-xs text-center md:text-left">
-            &copy; {new Date().getFullYear()} NEXUS. All rights reserved.
+            &copy; {new Date().getFullYear()} AVOMA. All rights reserved.
           </p>
         </div>
       </div>
 
       {/* Text hover effect */}
       <div className="lg:flex hidden h-48 -mt-24 -mb-12">
-        <TextHoverEffect text="NEXUS" className="z-50" />
+        <TextHoverEffect text="AVOMA" className="z-50" />
       </div>
 
       <FooterBackgroundGradient />

@@ -10,8 +10,8 @@ const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron", wei
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 
 export const metadata: Metadata = {
-  title: "Nexus | Client Portal",
-  description: "Nexus AI Receptionist — Client Dashboard",
+  title: "Avoma | Client Portal",
+  description: "Avoma AI Receptionist — Client Dashboard",
 };
 
 export default async function RootLayout({

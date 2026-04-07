@@ -116,7 +116,7 @@ function SidebarInner({
             className="text-lg font-black"
             style={{ fontFamily: "var(--font-orbitron)", letterSpacing: "-0.04em", background: "linear-gradient(135deg, #f3f0ff 0%, #a78bfa 60%, #e879f9 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
           >
-            NEXUS
+            AVOMA
           </span>
         </Link>
       </div>
@@ -254,7 +254,7 @@ export default function Sidebar({ session }: { session: Session }) {
             className="text-base font-black"
             style={{ fontFamily: "var(--font-orbitron)", letterSpacing: "-0.04em", background: "linear-gradient(135deg, #f3f0ff 0%, #a78bfa 60%, #e879f9 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
           >
-            NEXUS
+            AVOMA
           </span>
         </Link>
         <button

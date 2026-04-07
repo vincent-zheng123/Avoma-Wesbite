@@ -88,7 +88,7 @@ export default function AddLeadPage() {
         Add Lead
       </h1>
       <p className="text-sm mb-8" style={{ color: "#6b6b80" }}>
-        Manually add a prospect to your NEXUS sales pipeline.
+        Manually add a prospect to your AVOMA sales pipeline.
       </p>
 
       <form onSubmit={handleSubmit}>

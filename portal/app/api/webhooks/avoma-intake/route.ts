@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 /**
- * POST /api/webhooks/nexus-intake
+ * POST /api/webhooks/avoma-intake
  *
- * Receives submissions from the NEXUS website start.html intake form.
- * Stores the lead in Supabase and triggers the n8n nexus-sales-callback
+ * Receives submissions from the AVOMA website start.html intake form.
+ * Stores the lead in Supabase and triggers the n8n avoma-sales-callback
  * workflow which fires Axel (outbound Vapi sales agent) after 3 minutes.
  *
  * Body: {
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
   const contactName = [first_name, last_name].filter(Boolean).join(" ");
 
-  // Store lead — clientId is null for NEXUS's own intake leads
+  // Store lead — clientId is null for AVOMA's own intake leads
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (prisma.lead.create as any)({
     data: {
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       businessName: business_name,
       industry,
       location: location ?? null,
-      source: "nexus_website",
+      source: "avoma_website",
       qualificationData: {
         monthly_volume: monthly_volume ?? null,
         service_type: service_type ?? null,
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
     },
   });
 
-  // Fire n8n nexus-sales-callback workflow (non-blocking)
-  const n8nWebhookUrl = process.env.N8N_NEXUS_SALES_WEBHOOK_URL;
+  // Fire n8n avoma-sales-callback workflow (non-blocking)
+  const n8nWebhookUrl = process.env.N8N_AVOMA_SALES_WEBHOOK_URL;
   if (n8nWebhookUrl) {
     fetch(n8nWebhookUrl, {
       method: "POST",

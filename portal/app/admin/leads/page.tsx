@@ -89,7 +89,7 @@ export default async function AdminLeadsPage({
             Leads Pipeline
           </h1>
           <p className="text-sm mt-1" style={{ color: "#a78bfa" }}>
-            Your NEXUS prospects — businesses to sell AI receptionist services to
+            Your AVOMA prospects — businesses to sell AI receptionist services to
           </p>
         </div>
         <Link

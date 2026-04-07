@@ -27,8 +27,8 @@ export default async function OfficePage() {
   ]);
 
   const agentName = config?.vapiAssistantId
-    ? `Nexus-${clientId.slice(-4).toUpperCase()}`
-    : user.name ?? "Nexus Agent";
+    ? `Avoma-${clientId.slice(-4).toUpperCase()}`
+    : user.name ?? "Avoma Agent";
 
   return (
     <VirtualOfficeClient
