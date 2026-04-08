@@ -59,25 +59,35 @@ export async function POST(req: Request) {
 
   const call = message.call;
 
-  // Vapi sends call.to / call.from on older payloads.
-  // Newer payloads use call.phoneNumber.number (business) and call.customer.number (caller).
+  // Vapi newer payloads: caller in call.customer.number, business ID in call.phoneNumberId.
+  // Older payloads: call.to (business E.164) and call.from (caller E.164).
   const toNumber: string = call?.to ?? call?.phoneNumber?.number ?? "";
   const fromNumber: string = call?.from ?? call?.customer?.number ?? "";
+  const vapiPhoneNumberId: string = call?.phoneNumberId ?? "";
   const callSid: string = call?.id;
 
-  if (!toNumber || !fromNumber) {
-    console.warn("[vapi-webhook] Missing to/from — call object:", JSON.stringify(call ?? {}));
-    return NextResponse.json({ error: "Missing to/from numbers" }, { status: 400 });
+  if (!fromNumber) {
+    console.warn("[vapi-webhook] Missing caller number — call object:", JSON.stringify(call ?? {}));
+    return NextResponse.json({ error: "Missing caller number" }, { status: 400 });
   }
 
-  // 1. Resolve client from the business phone number that was dialed
-  const config = await prisma.clientConfig.findUnique({
-    where: { vapiPhoneNumber: toNumber },
-    include: { client: true },
-  });
+  // 1. Resolve client — try phoneNumberId first (reliable in current Vapi), fall back to E.164
+  let config = null;
+  if (vapiPhoneNumberId) {
+    config = await prisma.clientConfig.findFirst({
+      where: { vapiPhoneNumberId },
+      include: { client: true },
+    });
+  }
+  if (!config && toNumber) {
+    config = await prisma.clientConfig.findUnique({
+      where: { vapiPhoneNumber: toNumber },
+      include: { client: true },
+    });
+  }
 
   if (!config) {
-    console.warn(`[vapi-webhook] No client config for number: ${toNumber}`);
+    console.warn(`[vapi-webhook] No client config for phoneNumberId=${vapiPhoneNumberId} / toNumber=${toNumber}`);
     return NextResponse.json({ received: true, warning: "No client config found" });
   }
 
