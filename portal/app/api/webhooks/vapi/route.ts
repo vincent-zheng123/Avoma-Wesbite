@@ -295,11 +295,14 @@ export async function POST(req: Request) {
         structured: structured as Record<string, unknown>,
       });
       try {
+        const ownerPhone = config.client.phone.startsWith("+")
+          ? config.client.phone
+          : `+${config.client.phone}`;
         const twilioClient = twilio(accountSid, authToken);
         await twilioClient.messages.create({
           body: notificationBody,
           from: config.twilioFromNumber,
-          to: config.client.phone,
+          to: ownerPhone,
         });
         console.log(`[vapi-webhook] Owner notification sent to ${config.client.phone}`);
       } catch (err) {
