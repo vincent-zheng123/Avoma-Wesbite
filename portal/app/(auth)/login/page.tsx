@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import HeroShutterText from "@/components/ui/hero-shutter-text";
 
 export default function LoginPage() {
@@ -105,9 +106,14 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1.5 tracking-wide uppercase" style={{ color: "#a78bfa" }}>
-                  Password
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-medium tracking-wide uppercase" style={{ color: "#a78bfa" }}>
+                    Password
+                  </label>
+                  <Link href="/forgot-password" className="text-xs" style={{ color: "#a855f7" }}>
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   type="password"
                   value={password}
