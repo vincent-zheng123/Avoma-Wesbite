@@ -31,7 +31,7 @@ import { unlinkVapiPhoneWithFallback } from "@/lib/vapi-client";
  */
 export async function POST(req: Request) {
   const rawText = await req.text().catch(() => "");
-  console.log("[vapi-webhook] RAW BODY:", rawText.slice(0, 500));
+  console.log("[vapi-webhook] RAW BODY:", rawText.slice(0, 2000));
 
   let body: unknown = null;
   try { body = JSON.parse(rawText); } catch { body = null; }
@@ -58,11 +58,15 @@ export async function POST(req: Request) {
   }
 
   const call = message.call;
-  const toNumber: string = call?.to;
-  const fromNumber: string = call?.from;
+
+  // Vapi sends call.to / call.from on older payloads.
+  // Newer payloads use call.phoneNumber.number (business) and call.customer.number (caller).
+  const toNumber: string = call?.to ?? call?.phoneNumber?.number ?? "";
+  const fromNumber: string = call?.from ?? call?.customer?.number ?? "";
   const callSid: string = call?.id;
 
   if (!toNumber || !fromNumber) {
+    console.warn("[vapi-webhook] Missing to/from — call object:", JSON.stringify(call ?? {}));
     return NextResponse.json({ error: "Missing to/from numbers" }, { status: 400 });
   }
 
