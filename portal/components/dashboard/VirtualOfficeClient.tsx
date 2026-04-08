@@ -86,8 +86,13 @@ export default function VirtualOfficeClient({
       if (timerRef.current) clearInterval(timerRef.current);
       setTimer("—");
       startRef.current = null;
+      sessionStorage.removeItem("vo_call_start");
     } else {
-      startRef.current = Date.now();
+      // Restore persisted start time across tab navigation, or set a new one
+      const stored = sessionStorage.getItem("vo_call_start");
+      const start = stored ? parseInt(stored, 10) : Date.now();
+      if (!stored) sessionStorage.setItem("vo_call_start", String(start));
+      startRef.current = start;
       timerRef.current = setInterval(() => {
         const elapsed = Math.floor((Date.now() - (startRef.current ?? Date.now())) / 1000);
         const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
