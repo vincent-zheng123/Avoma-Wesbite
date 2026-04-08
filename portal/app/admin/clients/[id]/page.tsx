@@ -346,29 +346,29 @@ export default function ClientDetailPage() {
                 Resets 1st of each month · Billing period is calendar month UTC
               </p>
             </div>
-            {client.config?.active === false && client.status === "ACTIVE" && (
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              {client.config?.active === false && client.status === "ACTIVE" && (
                 <span
                   className="text-xs px-2.5 py-1 rounded-full font-semibold border"
                   style={{ color: "#f87171", borderColor: "rgba(248,113,113,0.3)", background: "rgba(248,113,113,0.08)" }}
                 >
-                  Cap Reached · Calls routing to fallback
+                  Cap Reached · Routing to fallback
                 </span>
-                <button
-                  onClick={approveOverage}
-                  disabled={overageLoading}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all"
-                  style={{
-                    background: overageLoading ? "rgba(168,85,247,0.06)" : "rgba(168,85,247,0.12)",
-                    borderColor: "rgba(168,85,247,0.4)",
-                    color: "#f3f0ff",
-                    cursor: overageLoading ? "not-allowed" : "pointer",
-                  }}
-                >
-                  {overageLoading ? "Enabling…" : "Approve Overage"}
-                </button>
-              </div>
-            )}
+              )}
+              <button
+                onClick={approveOverage}
+                disabled={overageLoading}
+                className="text-xs font-semibold px-3 py-1.5 rounded-xl border transition-all"
+                style={{
+                  background: overageLoading ? "rgba(168,85,247,0.06)" : "rgba(168,85,247,0.12)",
+                  borderColor: "rgba(168,85,247,0.4)",
+                  color: "#f3f0ff",
+                  cursor: overageLoading ? "not-allowed" : "pointer",
+                }}
+              >
+                {overageLoading ? "Enabling…" : client.config?.active === false ? "Approve Overage" : "Override Cap"}
+              </button>
+            </div>
           </div>
 
           {usage.limitSeconds !== null ? (() => {

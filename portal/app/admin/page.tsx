@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { PLAN_LIMITS, billingMonthStart } from "@/lib/plan-limits";
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
@@ -11,10 +12,23 @@ export default async function AdminPage() {
   const user = session.user;
   if (user.role !== "ADMIN") redirect("/dashboard");
 
-  const clients = await prisma.client.findMany({
-    include: { config: true, user: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const monthStart = billingMonthStart();
+
+  const [clients, usageRows] = await Promise.all([
+    prisma.client.findMany({
+      include: { config: true, user: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.callLog.groupBy({
+      by: ["clientId"],
+      where: { createdAt: { gte: monthStart } },
+      _sum: { durationSeconds: true },
+    }),
+  ]);
+
+  const usageMap = new Map(
+    usageRows.map((r) => [r.clientId, r._sum.durationSeconds ?? 0])
+  );
 
   const statusColor: Record<string, string> = {
     ACTIVE: "#4ade80",
@@ -48,7 +62,7 @@ export default async function AdminPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b" style={{ borderColor: "rgba(168,85,247,0.15)" }}>
-                {["Business", "Contact", "Plan", "Status", "AI Phone", "Active", ""].map((h) => (
+                {["Business", "Plan / Usage", "Status", "AI Phone", "Active", ""].map((h) => (
                   <th key={h} className="text-left px-5 py-3.5 text-xs font-medium tracking-wide uppercase" style={{ color: "#6b6b80" }}>{h}</th>
                 ))}
               </tr>
@@ -56,6 +70,16 @@ export default async function AdminPage() {
             <tbody>
               {clients.map((client) => {
                 const color = statusColor[client.status] ?? "#a78bfa";
+                const usedSeconds = usageMap.get(client.id) ?? 0;
+                const planKey = (client.plan ?? "STARTER") as keyof typeof PLAN_LIMITS;
+                const limitSeconds = PLAN_LIMITS[planKey]?.seconds ?? PLAN_LIMITS.STARTER.seconds;
+                const isUnlimited = !isFinite(limitSeconds);
+                const pct = isUnlimited ? 0 : Math.min((usedSeconds / limitSeconds) * 100, 100);
+                const usedHrs = (usedSeconds / 3600).toFixed(1);
+                const limitHrs = isUnlimited ? null : (limitSeconds / 3600).toFixed(0);
+                const barColor = pct >= 100 ? "#f87171" : pct >= 80 ? "#fbbf24" : "#a855f7";
+                const capHit = client.config?.active === false && client.status === "ACTIVE";
+
                 return (
                   <tr
                     key={client.id}
@@ -68,11 +92,31 @@ export default async function AdminPage() {
                         <p className="text-xs" style={{ color: "#6b6b80" }}>{client.industry ?? "—"}</p>
                       </Link>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <p style={{ color: "#a78bfa" }}>{client.contactName}</p>
-                      <p className="text-xs" style={{ color: "#6b6b80" }}>{client.email}</p>
+
+                    {/* Plan + usage bar */}
+                    <td className="px-5 py-3.5" style={{ minWidth: 180 }}>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <span className="text-xs font-semibold" style={{ color: "#a78bfa" }}>{client.plan}</span>
+                        {capHit && (
+                          <span className="text-xs px-1.5 py-0.5 rounded font-bold" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171" }}>
+                            CAP
+                          </span>
+                        )}
+                      </div>
+                      {isUnlimited ? (
+                        <p className="text-xs" style={{ color: "#4ade80" }}>Unlimited</p>
+                      ) : (
+                        <>
+                          <div className="w-full h-1.5 rounded-full overflow-hidden mb-1" style={{ background: "rgba(168,85,247,0.12)" }}>
+                            <div className="h-full rounded-full" style={{ width: `${pct}%`, background: barColor }} />
+                          </div>
+                          <p className="text-xs" style={{ color: "#6b6b80" }}>
+                            {usedHrs} / {limitHrs} hrs ({pct.toFixed(0)}%)
+                          </p>
+                        </>
+                      )}
                     </td>
-                    <td className="px-5 py-3.5 text-xs font-medium" style={{ color: "#a78bfa" }}>{client.plan}</td>
+
                     <td className="px-5 py-3.5">
                       <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${color}18`, color }}>
                         {client.status.toLowerCase()}
