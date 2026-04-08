@@ -187,7 +187,7 @@ export default function ClientDetailPage() {
           </div>
         </div>
 
-        {/* Status changer */}
+        {/* Status changer + Preview button */}
         <div className="flex items-center gap-3">
           <span className="text-xs" style={{ color: "#6b6b80" }}>Pipeline status:</span>
           <select
@@ -207,6 +207,21 @@ export default function ClientDetailPage() {
             <option value="ACTIVE">Active</option>
             <option value="SUSPENDED">Churned</option>
           </select>
+          <button
+            onClick={() => {
+              document.cookie = `avoma_preview_client=${client.id}; path=/; SameSite=Lax`;
+              window.location.href = "/dashboard";
+            }}
+            className="px-3 py-2 rounded-xl text-sm font-semibold"
+            style={{
+              background: "rgba(124,58,237,0.15)",
+              border: "1px solid rgba(168,85,247,0.35)",
+              color: "#a78bfa",
+              cursor: "pointer",
+            }}
+          >
+            Preview Dashboard →
+          </button>
         </div>
       </div>
 

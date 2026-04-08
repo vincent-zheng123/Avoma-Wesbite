@@ -21,8 +21,8 @@ export const getEffectiveClientId = cache(async function getEffectiveClientId(
       });
       if (exists) return exists.id;
     }
-    const first = await prisma.client.findFirst({ orderBy: { createdAt: "asc" } });
-    return first?.id ?? null;
+    // No preview cookie set — admin must select a client first
+    return null;
   }
   return null;
 });

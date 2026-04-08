@@ -55,18 +55,21 @@ export default function AdminPreviewBanner({ clients, currentClientId }: Props) 
             </option>
           ))}
         </select>
-        <a
-          href="/admin"
+        <button
+          onClick={() => {
+            document.cookie = "avoma_preview_client=; path=/; max-age=0; SameSite=Lax";
+            window.location.href = "/admin";
+          }}
           className="text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors"
           style={{
             color: "#fbbf24",
             borderColor: "rgba(251,191,36,0.3)",
             background: "rgba(251,191,36,0.08)",
-            textDecoration: "none",
+            cursor: "pointer",
           }}
         >
-          ← Admin
-        </a>
+          ← Exit Preview
+        </button>
       </div>
     </div>
   );

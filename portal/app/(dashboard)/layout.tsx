@@ -24,6 +24,9 @@ export default async function DashboardLayout({
 
   const effectiveClientId = await getEffectiveClientId(session.user, previewId);
 
+  // Admin with no preview client selected → send them to their admin home
+  if (isAdmin && !effectiveClientId) redirect("/admin");
+
   // Fetch all clients for the admin switcher dropdown
   let allClients: { id: string; businessName: string }[] = [];
   if (isAdmin) {
@@ -35,7 +38,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden" style={{ background: "#06040f" }}>
-      <Sidebar session={session} />
+      <Sidebar session={session} isPreviewMode={isAdmin} />
       <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto h-full flex flex-col">
         {isAdmin && effectiveClientId && allClients.length > 0 && (
           <AdminPreviewBanner

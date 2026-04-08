@@ -87,11 +87,13 @@ function SidebarInner({
   user,
   initials,
   pathname,
+  isPreviewMode,
   onLinkClick,
 }: {
   user: { name?: string | null; role?: string };
   initials: string;
   pathname: string;
+  isPreviewMode?: boolean;
   onLinkClick?: () => void;
 }) {
   return (
@@ -143,7 +145,8 @@ function SidebarInner({
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
+        {/* Client dashboard pages — hidden for admin unless in preview mode */}
+        {(user.role !== "ADMIN" || isPreviewMode) && navItems.map((item) => {
           const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
           return (
             <Link
@@ -218,7 +221,7 @@ function SidebarInner({
   );
 }
 
-export default function Sidebar({ session }: { session: Session }) {
+export default function Sidebar({ session, isPreviewMode }: { session: Session; isPreviewMode?: boolean }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const user = session.user as { name?: string | null; role?: string };
@@ -302,6 +305,7 @@ export default function Sidebar({ session }: { session: Session }) {
               user={user}
               initials={initials}
               pathname={pathname}
+              isPreviewMode={isPreviewMode}
               onLinkClick={() => setMobileOpen(false)}
             />
           </aside>
@@ -313,7 +317,7 @@ export default function Sidebar({ session }: { session: Session }) {
         className="hidden md:flex w-64 flex-shrink-0 flex-col sticky top-0 h-screen border-r"
         style={{ background: "#0d0a1a", borderColor: "rgba(168,85,247,0.15)" }}
       >
-        <SidebarInner user={user} initials={initials} pathname={pathname} />
+        <SidebarInner user={user} initials={initials} pathname={pathname} isPreviewMode={isPreviewMode} />
       </aside>
     </>
   );
