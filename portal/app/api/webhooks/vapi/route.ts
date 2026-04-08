@@ -30,12 +30,27 @@ import { unlinkVapiPhoneWithFallback } from "@/lib/vapi-client";
  * }
  */
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
-  if (!body?.message) {
+  const rawText = await req.text().catch(() => "");
+  console.log("[vapi-webhook] RAW BODY:", rawText.slice(0, 500));
+
+  let body: unknown = null;
+  try { body = JSON.parse(rawText); } catch { body = null; }
+
+  const anyBody = body as Record<string, unknown> | null;
+
+  // Support both wrapped { message: {...} } and flat { type: "..." } payloads
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const message: any =
+    anyBody?.message ??
+    (anyBody?.type ? anyBody : null) ??
+    {};
+
+  console.log("[vapi-webhook] message.type:", message?.type);
+
+  if (!message?.type) {
+    console.warn("[vapi-webhook] No message type — payload keys:", Object.keys(anyBody ?? {}));
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
-
-  const { message } = body;
 
   // Only handle end-of-call reports
   if (message.type !== "end-of-call-report") {
