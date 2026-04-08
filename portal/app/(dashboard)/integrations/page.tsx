@@ -53,7 +53,7 @@ export default function IntegrationsPage() {
     } else if (gcal === "error") {
       showToast("error", "Failed to connect Google Calendar. Please try again.");
     }
-  }, [searchParams]);
+  }, [searchParams, showToast]);
 
   useEffect(() => {
     if (!session) return;
