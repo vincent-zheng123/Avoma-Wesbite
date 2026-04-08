@@ -806,6 +806,73 @@ export async function getNicheDisplayFields(
   }));
 }
 
+// ─── Caller follow-up SMS defaults ───────────────────────────────────────────
+
+/**
+ * Default follow-up SMS templates per industry.
+ * Two variants: "booked" (appointment confirmed) and "general" (all other outcomes).
+ * Supports {caller_name} and {business_name} placeholders.
+ * Clients can override these via followupSmsTemplate in client_config (booked only for now).
+ */
+export const FOLLOWUP_SMS_DEFAULTS: Record<string, { booked: string; general: string }> = {
+  ROOFING: {
+    booked:  "Hi {caller_name}! Your free roof estimate with {business_name} is confirmed. We'll see you soon — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for reaching out to {business_name}. A member of our team will follow up with you shortly. Reply STOP to opt out.",
+  },
+  HVAC: {
+    booked:  "Hi {caller_name}! Your HVAC service appointment with {business_name} is confirmed. We'll be there soon — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will follow up with you shortly to get you scheduled. Reply STOP to opt out.",
+  },
+  PLUMBING: {
+    booked:  "Hi {caller_name}! Your plumbing appointment with {business_name} is confirmed. We'll be in touch with details — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for calling {business_name}. A plumber will follow up with you shortly. Reply STOP to opt out.",
+  },
+  DENTAL: {
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to seeing you — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for contacting {business_name}. Our front desk will follow up with you shortly. Reply STOP to opt out.",
+  },
+  MEDICAL: {
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We'll see you soon — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for reaching out to {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
+  },
+  LEGAL: {
+    booked:  "Hi {caller_name}! Your consultation with {business_name} is confirmed. We'll speak soon — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thank you for contacting {business_name}. An attorney will be in touch with you shortly. Reply STOP to opt out.",
+  },
+  SALON_SPA: {
+    booked:  "Hi {caller_name}! You're all booked at {business_name}! We can't wait to see you — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for calling {business_name}. We'll reach out soon to get you scheduled. Reply STOP to opt out.",
+  },
+  AUTO_REPAIR: {
+    booked:  "Hi {caller_name}! Your service appointment at {business_name} is confirmed. We'll have your vehicle taken care of — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
+  },
+  VETERINARY: {
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to meeting your pet — reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for reaching out to {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
+  },
+};
+
+const FOLLOWUP_SMS_FALLBACK = {
+  booked:  "Hi {caller_name}! Your appointment with {business_name} is confirmed. We look forward to seeing you — reply STOP to opt out.",
+  general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will be in touch shortly. Reply STOP to opt out.",
+};
+
+/**
+ * Returns the appropriate follow-up SMS template for a caller.
+ * Priority: client DB override (booked only) → industry default → generic fallback.
+ */
+export function getFollowupSmsTemplate(params: {
+  industry: string | null;
+  isBooked: boolean;
+  clientOverride: string | null;
+}): string {
+  const { industry, isBooked, clientOverride } = params;
+  if (isBooked && clientOverride) return clientOverride;
+  const defaults = industry ? (FOLLOWUP_SMS_DEFAULTS[industry.toUpperCase()] ?? FOLLOWUP_SMS_FALLBACK) : FOLLOWUP_SMS_FALLBACK;
+  return isBooked ? defaults.booked : defaults.general;
+}
+
 // ─── Owner booking notification SMS ──────────────────────────────────────────
 
 function buildServiceDetail(

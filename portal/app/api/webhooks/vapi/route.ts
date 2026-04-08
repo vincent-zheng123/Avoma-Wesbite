@@ -4,7 +4,7 @@ import type { Prisma } from "@prisma/client";
 import twilio from "twilio";
 import { billingMonthStart, planLimitSeconds } from "@/lib/plan-limits";
 import { unlinkVapiPhoneWithFallback } from "@/lib/vapi-client";
-import { buildOwnerNotificationSms, type BookingEventType } from "@/lib/niches";
+import { buildOwnerNotificationSms, getFollowupSmsTemplate, type BookingEventType } from "@/lib/niches";
 
 /**
  * POST /api/webhooks/vapi
@@ -318,14 +318,16 @@ export async function POST(req: Request) {
     }
   }
 
-  // 6. Send SMS follow-up if template configured
-  if (
-    config.twilioFromNumber &&
-    config.followupSmsTemplate &&
-    outcome !== "NOT_INTERESTED" &&
-    outcome !== "WRONG_NUMBER"
-  ) {
-    const messageBody = (config.followupSmsTemplate ?? "")
+  // 6. Send caller follow-up SMS
+  //    Skipped for outcomes where a follow-up would be inappropriate.
+  const skipFollowup = outcome === "NOT_INTERESTED" || outcome === "WRONG_NUMBER" || outcome === "NO_ANSWER" || outcome === "VOICEMAIL";
+  if (config.twilioFromNumber && !skipFollowup) {
+    const template = getFollowupSmsTemplate({
+      industry: config.client.industry,
+      isBooked: outcome === "APPOINTMENT_BOOKED",
+      clientOverride: config.followupSmsTemplate ?? null,
+    });
+    const messageBody = template
       .replace("{caller_name}", callerName ?? "there")
       .replace("{business_name}", config.client.businessName);
 
