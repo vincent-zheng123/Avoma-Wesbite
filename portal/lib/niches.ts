@@ -806,6 +806,89 @@ export async function getNicheDisplayFields(
   }));
 }
 
+// ─── Owner booking notification SMS ──────────────────────────────────────────
+
+function buildServiceDetail(
+  industry: string | null,
+  data: Record<string, unknown>
+): string | null {
+  const fmt = (v: unknown): string | null =>
+    v != null ? String(v).replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : null;
+  const parts = (...vals: (string | null | undefined)[]) =>
+    vals.filter(Boolean).join(" · ") || null;
+
+  switch ((industry ?? "").toUpperCase()) {
+    case "DENTAL":
+      return parts(fmt(data.procedureType), data.isNewPatient === true ? "New patient" : null);
+    case "ROOFING":
+      return parts(fmt(data.serviceType), fmt(data.propertyType), data.stormDamage === true ? "Storm damage" : null);
+    case "HVAC":
+      return parts(fmt(data.serviceType), fmt(data.unitType));
+    case "MEDICAL":
+      return data.reasonForVisit ? String(data.reasonForVisit) : null;
+    case "LEGAL":
+      return parts(fmt(data.caseType), data.isNewClient === true ? "New client" : null);
+    case "PLUMBING": {
+      const desc = data.issueDescription ? String(data.issueDescription) : null;
+      return parts(fmt(data.serviceType), desc);
+    }
+    case "SALON_SPA":
+      return fmt(data.serviceType);
+    case "AUTO_REPAIR": {
+      const vehicle = [data.vehicleYear, data.vehicleMake, data.vehicleModel].filter(Boolean).join(" ") || null;
+      return parts(vehicle, fmt(data.serviceType));
+    }
+    case "VETERINARY": {
+      const pet = [data.petName, data.petType ? `the ${fmt(data.petType)}` : null].filter(Boolean).join(" ") || null;
+      return parts(pet, data.reasonForVisit ? String(data.reasonForVisit) : null);
+    }
+    default:
+      return null;
+  }
+}
+
+/**
+ * Builds the SMS body sent to the business owner when an appointment is booked.
+ */
+export function buildOwnerNotificationSms(params: {
+  businessName: string;
+  callerName: string | null;
+  callerPhone: string;
+  appointmentTime: string | null;
+  timezone: string | null;
+  industry: string | null;
+  structured: Record<string, unknown>;
+}): string {
+  const { businessName, callerName, callerPhone, appointmentTime, timezone, industry, structured } = params;
+
+  const caller = callerName ? `${callerName} (${callerPhone})` : callerPhone;
+
+  let whenLine = "";
+  if (appointmentTime) {
+    try {
+      whenLine = new Date(appointmentTime).toLocaleString("en-US", {
+        timeZone: timezone ?? "America/New_York",
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    } catch {
+      whenLine = appointmentTime;
+    }
+  }
+
+  const serviceDetail = buildServiceDetail(industry, structured);
+
+  return [
+    `New booking at ${businessName}`,
+    `Caller: ${caller}`,
+    ...(serviceDetail ? [`Service: ${serviceDetail}`] : []),
+    ...(whenLine ? [`When: ${whenLine}`] : []),
+  ].join("\n");
+}
+
 // ─── Base receptionist system prompt ─────────────────────────────────────────
 
 export const BASE_SYSTEM_PROMPT = (businessName: string, businessHoursStart: string, businessHoursEnd: string, timezone: string) => `

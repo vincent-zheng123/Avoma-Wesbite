@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import twilio from "twilio";
 import { billingMonthStart, planLimitSeconds } from "@/lib/plan-limits";
 import { unlinkVapiPhoneWithFallback } from "@/lib/vapi-client";
+import { buildOwnerNotificationSms } from "@/lib/niches";
 
 /**
  * POST /api/webhooks/vapi
@@ -277,6 +278,34 @@ export async function POST(req: Request) {
       where: { clientId, callerPhone: fromNumber, status: "CONFIRMED" },
       data: { appointmentType },
     });
+  }
+
+  // 5b. Owner notification SMS — sent to the business owner's contact phone when a booking is confirmed.
+  if (outcome === "APPOINTMENT_BOOKED" && config.client.phone) {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    if (accountSid && authToken && config.twilioFromNumber) {
+      const notificationBody = buildOwnerNotificationSms({
+        businessName: config.client.businessName,
+        callerName,
+        callerPhone: fromNumber,
+        appointmentTime: (structured.appointmentTime as string | undefined) ?? null,
+        timezone: config.timezone,
+        industry: config.client.industry,
+        structured: structured as Record<string, unknown>,
+      });
+      try {
+        const twilioClient = twilio(accountSid, authToken);
+        await twilioClient.messages.create({
+          body: notificationBody,
+          from: config.twilioFromNumber,
+          to: config.client.phone,
+        });
+        console.log(`[vapi-webhook] Owner notification sent to ${config.client.phone}`);
+      } catch (err) {
+        console.error("[vapi-webhook] Owner notification SMS failed:", err);
+      }
+    }
   }
 
   // 6. Send SMS follow-up if template configured
