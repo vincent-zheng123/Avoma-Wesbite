@@ -33,9 +33,6 @@ export default async function DashboardLayout({
     });
   }
 
-  const currentClientName =
-    allClients.find((c) => c.id === effectiveClientId)?.businessName ?? "";
-
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden" style={{ background: "#06040f" }}>
       <Sidebar session={session} />
