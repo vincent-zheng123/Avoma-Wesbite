@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
@@ -19,17 +19,39 @@ export default function IntegrationsPage() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const [calendarConnected, setCalendarConnected] = useState<boolean | null>(null);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+
+  const showToast = useCallback((type: "success" | "error", msg: string) => {
+    setToast({ type, msg });
+    setTimeout(() => setToast(null), 5000);
+  }, []);
+
+  async function handleDisconnect() {
+    setDisconnecting(true);
+    setConfirmDisconnect(false);
+    try {
+      const res = await fetch("/api/integrations/google-calendar/disconnect", { method: "POST" });
+      if (res.ok) {
+        setCalendarConnected(false);
+        showToast("success", "Google Calendar disconnected. Appointments will no longer be auto-booked.");
+      } else {
+        showToast("error", "Failed to disconnect. Please try again.");
+      }
+    } catch {
+      showToast("error", "Failed to disconnect. Please try again.");
+    }
+    setDisconnecting(false);
+  }
 
   useEffect(() => {
     const gcal = searchParams.get("gcal");
     if (gcal === "success") {
       setCalendarConnected(true);
-      setToast({ type: "success", msg: "Google Calendar connected! Appointments will now be booked automatically on calls." });
-      setTimeout(() => setToast(null), 5000);
+      showToast("success", "Google Calendar connected! Appointments will now be booked automatically on calls.");
     } else if (gcal === "error") {
-      setToast({ type: "error", msg: "Failed to connect Google Calendar. Please try again." });
-      setTimeout(() => setToast(null), 4000);
+      showToast("error", "Failed to connect Google Calendar. Please try again.");
     }
   }, [searchParams]);
 
@@ -80,9 +102,50 @@ export default function IntegrationsPage() {
           </div>
           <p className="text-xs leading-relaxed" style={{ color: "#a78bfa" }}>Book, reschedule, and cancel appointments directly on calls — no manual work required.</p>
           {session?.user?.clientId && (
-            <a href="/api/integrations/google-calendar/connect" className="mt-1 text-xs font-semibold px-3 py-2 rounded-lg text-center" style={{ background: calendarConnected ? "rgba(96,165,250,0.08)" : "rgba(96,165,250,0.18)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.25)" }}>
-              {calendarConnected ? "Reconnect Calendar" : "Connect Google Calendar"}
-            </a>
+            <div className="mt-1 flex flex-col gap-2">
+              <a
+                href="/api/integrations/google-calendar/connect"
+                className="text-xs font-semibold px-3 py-2 rounded-lg text-center"
+                style={{ background: calendarConnected ? "rgba(96,165,250,0.08)" : "rgba(96,165,250,0.18)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.25)" }}
+              >
+                {calendarConnected ? "Reconnect Calendar" : "Connect Google Calendar"}
+              </a>
+
+              {calendarConnected && !confirmDisconnect && (
+                <button
+                  onClick={() => setConfirmDisconnect(true)}
+                  className="text-xs font-semibold px-3 py-2 rounded-lg text-center"
+                  style={{ background: "rgba(239,68,68,0.07)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)", cursor: "pointer" }}
+                >
+                  Disconnect
+                </button>
+              )}
+
+              {confirmDisconnect && (
+                <div className="rounded-lg p-3 flex flex-col gap-2" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}>
+                  <p className="text-xs" style={{ color: "#f87171" }}>
+                    Disconnect Google Calendar? Appointments won&apos;t be auto-booked until reconnected.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleDisconnect}
+                      disabled={disconnecting}
+                      className="flex-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                      style={{ background: "rgba(239,68,68,0.2)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)", cursor: disconnecting ? "not-allowed" : "pointer" }}
+                    >
+                      {disconnecting ? "Disconnecting…" : "Yes, disconnect"}
+                    </button>
+                    <button
+                      onClick={() => setConfirmDisconnect(false)}
+                      className="flex-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                      style={{ background: "rgba(168,85,247,0.1)", color: "#a78bfa", border: "1px solid rgba(168,85,247,0.2)", cursor: "pointer" }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
         {STATIC_INTEGRATIONS.map((ig) => (
