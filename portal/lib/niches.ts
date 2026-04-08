@@ -816,45 +816,45 @@ export async function getNicheDisplayFields(
  */
 export const FOLLOWUP_SMS_DEFAULTS: Record<string, { booked: string; general: string }> = {
   ROOFING: {
-    booked:  "Hi {caller_name}! Your free roof estimate with {business_name} is confirmed. We'll see you soon — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your free roof estimate with {business_name} is confirmed. We will see you soon. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for reaching out to {business_name}. A member of our team will follow up with you shortly. Reply STOP to opt out.",
   },
   HVAC: {
-    booked:  "Hi {caller_name}! Your HVAC service appointment with {business_name} is confirmed. We'll be there soon — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your HVAC appointment with {business_name} is confirmed. We will be there soon. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will follow up with you shortly to get you scheduled. Reply STOP to opt out.",
   },
   PLUMBING: {
-    booked:  "Hi {caller_name}! Your plumbing appointment with {business_name} is confirmed. We'll be in touch with details — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your plumbing appointment with {business_name} is confirmed. We will be in touch with details. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for calling {business_name}. A plumber will follow up with you shortly. Reply STOP to opt out.",
   },
   DENTAL: {
-    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to seeing you — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to seeing you. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for contacting {business_name}. Our front desk will follow up with you shortly. Reply STOP to opt out.",
   },
   MEDICAL: {
-    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We'll see you soon — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We will see you soon. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for reaching out to {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
   },
   LEGAL: {
-    booked:  "Hi {caller_name}! Your consultation with {business_name} is confirmed. We'll speak soon — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your consultation with {business_name} is confirmed. We will be in touch shortly. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thank you for contacting {business_name}. An attorney will be in touch with you shortly. Reply STOP to opt out.",
   },
   SALON_SPA: {
-    booked:  "Hi {caller_name}! You're all booked at {business_name}! We can't wait to see you — reply STOP to opt out.",
-    general: "Hi {caller_name}! Thanks for calling {business_name}. We'll reach out soon to get you scheduled. Reply STOP to opt out.",
+    booked:  "Hi {caller_name}! You are all booked at {business_name}! We cannot wait to see you. Reply STOP to opt out.",
+    general: "Hi {caller_name}! Thanks for calling {business_name}. We will reach out soon to get you scheduled. Reply STOP to opt out.",
   },
   AUTO_REPAIR: {
-    booked:  "Hi {caller_name}! Your service appointment at {business_name} is confirmed. We'll have your vehicle taken care of — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your service appointment at {business_name} is confirmed. We will have your vehicle taken care of. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
   },
   VETERINARY: {
-    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to meeting your pet — reply STOP to opt out.",
+    booked:  "Hi {caller_name}! Your appointment at {business_name} is confirmed. We look forward to meeting your pet. Reply STOP to opt out.",
     general: "Hi {caller_name}! Thanks for reaching out to {business_name}. Our team will follow up with you shortly. Reply STOP to opt out.",
   },
 };
 
 const FOLLOWUP_SMS_FALLBACK = {
-  booked:  "Hi {caller_name}! Your appointment with {business_name} is confirmed. We look forward to seeing you — reply STOP to opt out.",
+  booked:  "Hi {caller_name}! Your appointment with {business_name} is confirmed. We look forward to seeing you. Reply STOP to opt out.",
   general: "Hi {caller_name}! Thanks for contacting {business_name}. Our team will be in touch shortly. Reply STOP to opt out.",
 };
 
