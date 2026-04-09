@@ -82,7 +82,7 @@ export default async function DashboardPage() {
           Overview
         </h1>
         <p className="text-sm mt-1" style={{ color: "#a78bfa" }}>
-          {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+          {new Date().toLocaleDateString("en-US", { timeZone: tz, weekday: "long", year: "numeric", month: "long", day: "numeric" })}
         </p>
       </div>
 
@@ -130,7 +130,7 @@ export default async function DashboardPage() {
                 <div key={call.id} className="flex items-center justify-between py-2.5 border-b last:border-0" style={{ borderColor: "rgba(168,85,247,0.1)" }}>
                   <div>
                     <p className="text-sm font-medium" style={{ color: "#f3f0ff" }}>{call.callerPhone}</p>
-                    <p className="text-xs" style={{ color: "#6b6b80" }}>{call.timestamp.toLocaleString()}</p>
+                    <p className="text-xs" style={{ color: "#6b6b80" }}>{call.timestamp.toLocaleString("en-US", { timeZone: tz, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>
                   </div>
                   <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${outcomeColor(call.outcome)}18`, color: outcomeColor(call.outcome) }}>
                     {outcomeLabel(call.outcome)}

@@ -32,6 +32,7 @@ export async function GET() {
     select: {
       calendarRefreshToken: true,
       calendarId: true,
+      timezone: true,
     },
   });
 
@@ -56,5 +57,5 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch events", details: eventsData }, { status: 502 });
   }
 
-  return NextResponse.json({ connected: true, events: eventsData.items ?? [] });
+  return NextResponse.json({ connected: true, events: eventsData.items ?? [], timezone: config.timezone ?? "America/New_York" });
 }

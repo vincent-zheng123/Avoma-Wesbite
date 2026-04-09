@@ -34,13 +34,13 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
   const clientId = await getEffectiveClientIdFromRequest(session.user);
   if (!clientId) redirect("/admin");
 
-  const lead = await prisma.lead.findUnique({ where: { id: params.id } });
+  const [lead, client, configRow] = await Promise.all([
+    prisma.lead.findUnique({ where: { id: params.id } }),
+    prisma.client.findUnique({ where: { id: clientId }, select: { industry: true } }),
+    prisma.clientConfig.findUnique({ where: { clientId }, select: { timezone: true } }),
+  ]);
   if (!lead || lead.clientId !== clientId) notFound();
-
-  const client = await prisma.client.findUnique({
-    where: { id: clientId },
-    select: { industry: true },
-  });
+  const tz = configRow?.timezone ?? "America/New_York";
 
   const nicheFields = client?.industry ? await getNicheDisplayFields(client.industry) : [];
 
@@ -103,9 +103,9 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             ["Location", lead.location ?? "—"],
             ["Business", lead.businessName ?? "—"],
             ["Website", lead.website ?? "—"],
-            ["Added", lead.createdAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })],
+            ["Added", lead.createdAt.toLocaleDateString("en-US", { timeZone: tz, month: "long", day: "numeric", year: "numeric" })],
             ["Last Contacted", lead.lastContacted
-              ? lead.lastContacted.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+              ? lead.lastContacted.toLocaleDateString("en-US", { timeZone: tz, month: "short", day: "numeric" })
               : "—"],
           ].map(([label, value]) => (
             <div
@@ -166,6 +166,7 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
                   <div>
                     <p className="text-sm" style={{ color: "#f3f0ff" }}>
                       {call.timestamp.toLocaleString("en-US", {
+                        timeZone: tz,
                         month: "short",
                         day: "numeric",
                         hour: "numeric",

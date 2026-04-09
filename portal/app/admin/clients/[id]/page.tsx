@@ -76,6 +76,8 @@ export default function ClientDetailPage() {
   const [calendarId, setCalendarId] = useState("");
   const [usage, setUsage] = useState<{ usedSeconds: number; limitSeconds: number | null; plan: string } | null>(null);
   const [overageLoading, setOverageLoading] = useState(false);
+  const [systemActive, setSystemActive] = useState<boolean | null>(null);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/clients/${id}/detail`)
@@ -86,6 +88,7 @@ export default function ClientDetailPage() {
           setClient(data);
           setCalConnected(!!data.config?.calendarRefreshToken);
           setCalendarId(data.config?.calendarId ?? "");
+          setSystemActive(data.config?.active ?? null);
         }
       })
       .catch(() => setError("Failed to load client."))
@@ -108,6 +111,19 @@ export default function ClientDetailPage() {
     if (!clientRes.error) setClient(clientRes);
     if (!usageRes.error) setUsage(usageRes);
     setOverageLoading(false);
+  }
+
+  async function toggleSystem(newActive: boolean) {
+    setToggleLoading(true);
+    const res = await fetch(`/api/admin/clients/${id}/toggle-active`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ active: newActive }),
+    });
+    if (res.ok) {
+      setSystemActive(newActive);
+    }
+    setToggleLoading(false);
   }
 
   async function updateStatus(status: string) {
@@ -187,7 +203,7 @@ export default function ClientDetailPage() {
           </div>
         </div>
 
-        {/* Status changer + Preview button */}
+        {/* Status changer + System toggle + Preview button */}
         <div className="flex items-center gap-3">
           <span className="text-xs" style={{ color: "#6b6b80" }}>Pipeline status:</span>
           <select
@@ -207,6 +223,31 @@ export default function ClientDetailPage() {
             <option value="ACTIVE">Active</option>
             <option value="SUSPENDED">Churned</option>
           </select>
+
+          {/* System on/off toggle */}
+          {systemActive !== null && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "#0d0a1a", border: `1px solid ${systemActive ? "rgba(74,222,128,0.3)" : "rgba(248,113,113,0.3)"}` }}>
+              <span className="inline-block w-2 h-2 rounded-full flex-shrink-0" style={{ background: systemActive ? "#4ade80" : "#f87171" }} />
+              <span className="text-xs font-medium" style={{ color: systemActive ? "#4ade80" : "#f87171" }}>
+                {systemActive ? "System On" : "System Off"}
+              </span>
+              <button
+                onClick={() => toggleSystem(!systemActive)}
+                disabled={toggleLoading}
+                className="text-xs font-semibold px-2.5 py-1 rounded-lg ml-1"
+                style={{
+                  background: systemActive ? "rgba(248,113,113,0.12)" : "rgba(74,222,128,0.12)",
+                  color: systemActive ? "#f87171" : "#4ade80",
+                  border: `1px solid ${systemActive ? "rgba(248,113,113,0.3)" : "rgba(74,222,128,0.3)"}`,
+                  cursor: toggleLoading ? "not-allowed" : "pointer",
+                  opacity: toggleLoading ? 0.6 : 1,
+                }}
+              >
+                {toggleLoading ? "..." : systemActive ? "Turn Off" : "Turn On"}
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => {
               document.cookie = `avoma_preview_client=${client.id}; path=/; SameSite=Lax`;

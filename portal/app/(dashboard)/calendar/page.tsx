@@ -18,49 +18,43 @@ function parseDate(e: CalendarEvent): Date {
   return new Date(raw);
 }
 
-function formatTime(dateStr?: string): string {
+function formatTime(dateStr?: string, tz = "America/New_York"): string {
   if (!dateStr) return "";
-  return new Date(dateStr).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return new Date(dateStr).toLocaleTimeString("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
 }
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+function formatDate(date: Date, tz = "America/New_York"): string {
+  return date.toLocaleDateString("en-US", { timeZone: tz, weekday: "short", month: "short", day: "numeric" });
 }
 
-function isToday(date: Date): boolean {
-  const now = new Date();
-  return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  );
+function toDateKey(date: Date, tz: string): string {
+  return date.toLocaleDateString("en-US", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" });
 }
 
-function isTomorrow(date: Date): boolean {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return (
-    date.getFullYear() === tomorrow.getFullYear() &&
-    date.getMonth() === tomorrow.getMonth() &&
-    date.getDate() === tomorrow.getDate()
-  );
+function isToday(date: Date, tz: string): boolean {
+  return toDateKey(date, tz) === toDateKey(new Date(), tz);
 }
 
-function dayLabel(date: Date): string {
-  if (isToday(date)) return "Today";
-  if (isTomorrow(date)) return "Tomorrow";
-  return formatDate(date);
+function isTomorrow(date: Date, tz: string): boolean {
+  const tomorrow = new Date(Date.now() + 86400000);
+  return toDateKey(date, tz) === toDateKey(tomorrow, tz);
+}
+
+function dayLabel(date: Date, tz: string): string {
+  if (isToday(date, tz)) return "Today";
+  if (isTomorrow(date, tz)) return "Tomorrow";
+  return formatDate(date, tz);
 }
 
 type GroupedEvents = { label: string; date: Date; events: CalendarEvent[] }[];
 
-function groupByDay(events: CalendarEvent[]): GroupedEvents {
+function groupByDay(events: CalendarEvent[], tz: string): GroupedEvents {
   const map = new Map<string, { label: string; date: Date; events: CalendarEvent[] }>();
   for (const e of events) {
     const d = parseDate(e);
-    const key = d.toDateString();
+    const key = toDateKey(d, tz);
     if (!map.has(key)) {
-      map.set(key, { label: dayLabel(d), date: d, events: [] });
+      map.set(key, { label: dayLabel(d, tz), date: d, events: [] });
     }
     map.get(key)!.events.push(e);
   }
@@ -69,6 +63,7 @@ function groupByDay(events: CalendarEvent[]): GroupedEvents {
 
 export default function CalendarPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [timezone, setTimezone] = useState("America/New_York");
   const [connected, setConnected] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -104,13 +99,14 @@ export default function CalendarPage() {
         } else {
           setConnected(data.connected);
           setEvents(data.events ?? []);
+          if (data.timezone) setTimezone(data.timezone);
         }
       })
       .catch(() => setError("Failed to load calendar."))
       .finally(() => setLoading(false));
   }, []);
 
-  const grouped = groupByDay(events);
+  const grouped = groupByDay(events, timezone);
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
@@ -268,7 +264,7 @@ export default function CalendarPage() {
               <div className="flex items-center gap-3 mb-3">
                 <span
                   className="text-xs font-semibold uppercase tracking-widest"
-                  style={{ color: isToday(date) ? "#a855f7" : "#6b6b80" }}
+                  style={{ color: isToday(date, timezone) ? "#a855f7" : "#6b6b80" }}
                 >
                   {label}
                 </span>
@@ -279,8 +275,8 @@ export default function CalendarPage() {
               <div className="space-y-2">
                 {dayEvents.map((event) => {
                   const isAllDay = !event.start.dateTime;
-                  const startTime = formatTime(event.start.dateTime);
-                  const endTime = formatTime(event.end.dateTime);
+                  const startTime = formatTime(event.start.dateTime, timezone);
+                  const endTime = formatTime(event.end.dateTime, timezone);
                   const isAIBooked = (event.summary ?? "").toLowerCase().includes("appointment") ||
                     (event.description ?? "").toLowerCase().includes("avoma");
 

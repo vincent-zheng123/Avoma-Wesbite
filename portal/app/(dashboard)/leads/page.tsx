@@ -19,10 +19,11 @@ export default async function LeadsPage() {
   const clientId = await getEffectiveClientIdFromRequest(user);
   if (!clientId) redirect("/admin");
 
-  const client = await prisma.client.findUnique({
-    where: { id: clientId },
-    select: { industry: true },
-  });
+  const [client, configRow] = await Promise.all([
+    prisma.client.findUnique({ where: { id: clientId }, select: { industry: true } }),
+    prisma.clientConfig.findUnique({ where: { clientId }, select: { timezone: true } }),
+  ]);
+  const tz = configRow?.timezone ?? "America/New_York";
 
   const industryType = client?.industry ?? null;
   const nicheFields = industryType ? await getNicheDisplayFields(industryType) : [];
@@ -93,7 +94,7 @@ export default async function LeadsPage() {
                       <LeadStatusBadge leadId={lead.id} initialStatus={lead.status} />
                     </td>
                     <td className="px-5 py-3.5 text-xs whitespace-nowrap" style={{ color: "#6b6b80" }}>
-                      {lead.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      {lead.createdAt.toLocaleDateString("en-US", { timeZone: tz, month: "short", day: "numeric" })}
                     </td>
                     {nicheFields.map((field) => {
                       const rawVal = qData ? qData[field.key] : null;
