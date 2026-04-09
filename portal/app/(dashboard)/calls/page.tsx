@@ -14,20 +14,28 @@ export default async function CallsPage() {
   const clientId = await getEffectiveClientIdFromRequest(user);
   if (!clientId) redirect("/admin");
 
-  const calls = await prisma.callLog.findMany({
-    where: { clientId },
-    orderBy: { timestamp: "desc" },
-    take: 100,
-    select: {
-      id: true,
-      callerName: true,
-      callerPhone: true,
-      timestamp: true,
-      durationSeconds: true,
-      transcriptUrl: true,
-      transcript: true,
-    },
-  });
+  const [calls, clientConfig] = await Promise.all([
+    prisma.callLog.findMany({
+      where: { clientId },
+      orderBy: { timestamp: "desc" },
+      take: 100,
+      select: {
+        id: true,
+        callerName: true,
+        callerPhone: true,
+        timestamp: true,
+        durationSeconds: true,
+        transcriptUrl: true,
+        transcript: true,
+      },
+    }),
+    prisma.clientConfig.findFirst({
+      where: { clientId },
+      select: { timezone: true },
+    }),
+  ]);
+
+  const timezone = clientConfig?.timezone ?? "America/New_York";
 
   return (
     <div className="p-8 max-w-full mx-auto">
@@ -61,7 +69,7 @@ export default async function CallsPage() {
                     <p className="text-xs" style={{ color: "#6b6b80" }}>{call.callerPhone}</p>
                   </td>
                   <td className="px-5 py-3.5 whitespace-nowrap" style={{ color: "#a78bfa" }}>
-                    {call.timestamp.toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                    {call.timestamp.toLocaleString("en-US", { timeZone: timezone, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                   </td>
                   <td className="px-5 py-3.5 whitespace-nowrap" style={{ color: "#a78bfa" }}>
                     {call.durationSeconds ? `${Math.floor(call.durationSeconds / 60)}m ${call.durationSeconds % 60}s` : "—"}
