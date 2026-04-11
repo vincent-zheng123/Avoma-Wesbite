@@ -64,10 +64,14 @@ export async function POST(
     }
   }
 
-  // Update DB regardless of Vapi result
+  // Update DB regardless of Vapi result.
+  // On first activation, stamp liveSince — this anchors proration for the billing month.
   await prisma.clientConfig.update({
     where: { clientId: params.id },
-    data: { active },
+    data: {
+      active,
+      ...(active && !config.liveSince ? { liveSince: new Date() } : {}),
+    },
   });
 
   await prisma.automationRun.create({

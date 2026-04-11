@@ -19,10 +19,10 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const client = await prisma.client.findUnique({
-    where: { id: params.id },
-    select: { plan: true },
-  });
+  const [client, config] = await Promise.all([
+    prisma.client.findUnique({ where: { id: params.id }, select: { plan: true } }),
+    prisma.clientConfig.findUnique({ where: { clientId: params.id }, select: { liveSince: true } }),
+  ]);
   if (!client) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -35,12 +35,13 @@ export async function GET(
   });
 
   const usedSeconds = agg._sum.durationSeconds ?? 0;
-  const limit = planLimitSeconds(client.plan);
+  const limit = planLimitSeconds(client.plan, config?.liveSince);
 
   return NextResponse.json({
     usedSeconds,
     limitSeconds: limit === Infinity ? null : limit,
     plan: client.plan,
     monthStart: monthStart.toISOString(),
+    liveSince: config?.liveSince?.toISOString() ?? null,
   });
 }

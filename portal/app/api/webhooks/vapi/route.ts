@@ -218,7 +218,7 @@ export async function POST(req: Request) {
   //     Runs after the call log is written so usage includes the current call.
   //     ENTERPRISE and planCapOverride clients are exempt.
   if (config.client.plan !== "ENTERPRISE" && !config.planCapOverride) {
-    const limitSeconds = planLimitSeconds(config.client.plan);
+    const limitSeconds = planLimitSeconds(config.client.plan, config.liveSince);
     if (isFinite(limitSeconds)) {
       const monthStart = billingMonthStart();
       const agg = await prisma.callLog.aggregate({
