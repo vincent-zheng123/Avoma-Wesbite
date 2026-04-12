@@ -59,7 +59,7 @@
       background:linear-gradient(135deg,#f3f0ff 0%,#a78bfa 60%,#e879f9 100%);
       -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
-    .nav-links { display:flex; align-items:center; gap:36px; list-style:none; }
+    .nav-links { display:flex; align-items:center; gap:36px; list-style:none; position:absolute; left:50%; transform:translateX(-50%); }
     .nav-links a {
       color:var(--muted); text-decoration:none; font-size:0.88rem; font-weight:500;
       transition:color 0.2s;
@@ -676,63 +676,93 @@
     footer { padding-bottom:110px !important; }
     @media(max-width:580px){ .dock-nav { display:none; } }
 
-    /* ── Testimonials Carousel ── */
-    #testimonials {
-      background:var(--bg); position:relative; overflow:hidden;
-    }
-    #testimonials::before {
+    /* ── Example Calls Player ── */
+    #calls { background:var(--bg); position:relative; overflow:hidden; padding:5rem 0 4.5rem; }
+    #calls::before {
       content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
       background:
-        radial-gradient(ellipse 55% 50% at 90% 30%, rgba(124,58,237,0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 50% at 5% 75%, rgba(232,121,249,0.08) 0%, transparent 70%);
+        radial-gradient(ellipse 60% 55% at 75% 20%, rgba(124,58,237,0.13) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 50% at 10% 80%, rgba(232,121,249,0.08) 0%, transparent 70%);
     }
-    #testimonials .section-inner { padding:100px 40px 0; position:relative; z-index:1; }
-    .gal-header { display:flex; align-items:flex-end; justify-content:space-between; }
-    .gal-arrows { display:flex; gap:8px; flex-shrink:0; }
-    .gal-btn {
-      width:44px; height:44px; border-radius:12px;
-      background:rgba(124,58,237,0.1); border:1px solid rgba(168,85,247,0.25);
-      color:var(--muted); cursor:pointer;
+    #calls .section-inner { position:relative; z-index:1; }
+    .calls-player {
+      position:relative; max-width:600px; margin:2.5rem auto 2rem;
+      background:linear-gradient(160deg,rgba(124,58,237,0.14) 0%,rgba(8,4,22,0.85) 100%);
+      border:1px solid rgba(168,85,247,0.22); border-radius:24px;
+      padding:1.75rem 2rem 1.5rem; overflow:hidden;
+    }
+    .calls-player-header { display:flex; align-items:center; gap:0.875rem; margin-bottom:1.75rem; }
+    .calls-industry-tag {
+      font-family:'Space Grotesk',sans-serif; font-size:0.7rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase; color:#e879f9;
+      background:rgba(232,121,249,0.1); border:1px solid rgba(232,121,249,0.28);
+      border-radius:100px; padding:0.28rem 0.9rem;
+      transition:background 0.3s ease, border-color 0.3s ease;
+    }
+    .calls-call-type {
+      font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; color:var(--text);
+      transition:opacity 0.3s ease;
+    }
+    .calls-wave-wrap { margin:0 -0.5rem 1.375rem; height:80px; }
+    .calls-waveform { width:100%; height:80px; }
+    .wv {
+      fill:rgba(168,85,247,0.25);
+      transform-box:fill-box; transform-origin:50% 100%;
+      transition:fill 0.35s ease;
+    }
+    .cp-playing .wv { fill:#a855f7; animation:wv-pulse 0.85s ease-in-out infinite alternate; }
+    .cp-playing .wv:nth-child(3n)  { animation-duration:0.68s; }
+    .cp-playing .wv:nth-child(5n)  { animation-duration:1.05s; }
+    .cp-playing .wv:nth-child(7n)  { animation-duration:0.78s; }
+    .cp-playing .wv:nth-child(11n) { animation-duration:0.95s; }
+    @keyframes wv-pulse {
+      0%   { transform:scaleY(0.25); opacity:0.45; }
+      100% { transform:scaleY(1);    opacity:1;    }
+    }
+    .calls-progress-wrap { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.625rem; }
+    .calls-time {
+      font-family:'Space Grotesk',sans-serif; font-variant-numeric:tabular-nums;
+      font-size:0.78rem; color:rgba(243,240,255,0.45); min-width:2.4rem;
+    }
+    .calls-progress-bar { flex:1; height:3px; background:rgba(168,85,247,0.12); border-radius:4px; overflow:hidden; }
+    .calls-progress-fill {
+      height:100%; width:0%;
+      background:linear-gradient(90deg,#7c3aed,#e879f9); border-radius:4px;
+      transition:width 0.9s linear;
+    }
+    .calls-controls { display:flex; align-items:center; justify-content:center; gap:1.375rem; margin-bottom:1.125rem; }
+    .calls-ctrl-btn {
+      background:rgba(124,58,237,0.1); border:1px solid rgba(168,85,247,0.18);
+      border-radius:50%; width:44px; height:44px;
       display:flex; align-items:center; justify-content:center;
-      transition:background 0.2s, border-color 0.2s, color 0.2s;
+      cursor:pointer; color:rgba(168,85,247,0.65);
+      transition:background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
     }
-    .gal-btn:hover { background:rgba(124,58,237,0.2); border-color:var(--mid); color:var(--text); }
-    .gal-btn:disabled { opacity:0.35; cursor:not-allowed; }
-    .gal-track-outer { max-width:1400px; margin:0 auto; padding:0 40px; margin-top:52px; position:relative; z-index:1; overflow:hidden; }
-    .gal-viewport { overflow:visible; }
-    .gal-container { display:flex; gap:20px; user-select:none; cursor:grab; }
-    .gal-container:active { cursor:grabbing; }
-    .gal-slide { flex:0 0 300px; min-width:0; }
-    @media(min-width:1024px){ .gal-slide { flex:0 0 340px; } }
-    .gal-card {
-      display:block; text-decoration:none; border-radius:16px; overflow:hidden;
-      position:relative; min-height:420px; border:1px solid rgba(168,85,247,0.15);
+    .calls-ctrl-btn:hover { background:rgba(124,58,237,0.22); border-color:rgba(168,85,247,0.45); color:#a855f7; transform:scale(1.08); }
+    .calls-ctrl-btn:active { transform:scale(0.93); }
+    .calls-play-btn {
+      width:64px; height:64px; border-radius:50%;
+      background:linear-gradient(135deg,#6d28d9,#a855f7);
+      border:none; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; color:#fff;
+      box-shadow:0 0 36px rgba(124,58,237,0.5),0 6px 18px rgba(0,0,0,0.45);
+      transition:box-shadow 0.2s ease, transform 0.15s ease;
     }
-    .gal-card img {
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover; object-position:center top; transition:transform 0.4s ease;
+    .calls-play-btn:hover { box-shadow:0 0 52px rgba(168,85,247,0.65),0 6px 22px rgba(0,0,0,0.55); transform:scale(1.06); }
+    .calls-play-btn:active { transform:scale(0.94); }
+    .calls-note { text-align:center; font-size:0.7rem; color:rgba(243,240,255,0.25); font-family:'Inter',sans-serif; margin:0; }
+    .calls-industries { display:flex; flex-wrap:wrap; justify-content:center; gap:0.6rem; max-width:680px; margin:0 auto; }
+    .cp-pill {
+      font-family:'Space Grotesk',sans-serif; font-size:0.8rem; font-weight:600;
+      color:rgba(243,240,255,0.6);
+      background:rgba(124,58,237,0.07); border:1px solid rgba(168,85,247,0.14);
+      border-radius:100px; padding:0.45rem 1.05rem; cursor:pointer;
+      transition:background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
     }
-    .gal-card:hover img { transform:scale(1.05); }
-    .gal-overlay {
-      position:absolute; inset:0;
-      background:linear-gradient(to bottom,transparent 0%,rgba(10,3,25,0.5) 30%,rgba(5,2,15,0.93) 100%);
-    }
-    .gal-body { position:absolute; bottom:0; left:0; right:0; padding:22px 24px 26px; color:#fff; }
-    .gal-stars { font-size:0.82rem; letter-spacing:3px; color:#f59e0b; margin-bottom:10px; }
-    .gal-quote {
-      font-size:0.86rem; line-height:1.68; color:rgba(255,255,255,0.88); margin-bottom:16px;
-      display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
-    }
-    .gal-name { font-family:'Space Grotesk',sans-serif; font-size:0.98rem; font-weight:600; margin-bottom:3px; }
-    .gal-role { font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(232,121,249,0.85); }
-    .gal-nav { display:flex; justify-content:center; gap:8px; padding:36px 24px 80px; position:relative; z-index:1; }
-    .gal-dot {
-      width:8px; height:8px; border-radius:50%; padding:0;
-      background:rgba(168,85,247,0.2); border:none; cursor:pointer;
-      transition:background 0.2s, transform 0.2s;
-    }
-    .gal-dot.active { background:var(--mid); transform:scale(1.3); }
-    @media(max-width:768px){ .gal-arrows { display:none; } }
+    .cp-pill:hover { background:rgba(124,58,237,0.18); border-color:rgba(168,85,247,0.38); color:var(--text); }
+    .cp-pill.active { background:rgba(124,58,237,0.25); border-color:rgba(168,85,247,0.6); color:var(--text); box-shadow:0 0 14px rgba(124,58,237,0.22); }
+    .cp-pill:active { transform:scale(0.95); }
+    @media(max-width:600px){ .calls-player { padding:1.75rem 1.5rem 1.5rem; } }
 
     /* ── Glowing Button Effect ── */
     .btn-glow-wrap {
@@ -1011,6 +1041,96 @@
         );
     }
 
+    /* ── Stats Slideshow ── */
+    #stats-slideshow {
+      position:relative; overflow:hidden;
+      background:var(--bg);
+    }
+    #stats-slideshow::before {
+      content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(ellipse 60% 70% at 15% 50%, rgba(124,58,237,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 60% at 85% 50%, rgba(232,121,249,0.07) 0%, transparent 65%);
+    }
+    #stats-slideshow .section-inner { padding:100px 24px 80px; position:relative; z-index:1; }
+    .ss-header { text-align:center; margin-bottom:64px; }
+    .ss-track {
+      position:relative;
+      min-height:380px;
+    }
+    .ss-slide {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
+      opacity:0; pointer-events:none;
+      transition:opacity 0.55s cubic-bezier(0.4,0,0.2,1), transform 0.55s cubic-bezier(0.4,0,0.2,1);
+      transform:translateX(40px);
+    }
+    .ss-slide.active {
+      opacity:1; pointer-events:auto;
+      transform:translateX(0);
+    }
+    .ss-slide.exit {
+      opacity:0;
+      transform:translateX(-40px);
+    }
+    @media(max-width:860px){
+      .ss-slide { grid-template-columns:1fr; gap:32px; }
+      .ss-track { min-height:600px; }
+      .ss-visual { order:-1; }
+    }
+    .ss-left {}
+    .ss-kicker {
+      font-family:'Space Grotesk',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--mid); margin-bottom:14px;
+    }
+    .ss-stat {
+      font-family:'Orbitron',sans-serif;
+      font-size:clamp(3.5rem,8vw,6rem); font-weight:900; line-height:1;
+      background:linear-gradient(135deg,#f3f0ff 0%,#a78bfa 55%,#e879f9 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:20px; letter-spacing:-0.03em;
+    }
+    .ss-headline {
+      font-family:'Space Grotesk',sans-serif;
+      font-size:clamp(1.25rem,3vw,1.75rem); font-weight:700; line-height:1.3;
+      color:var(--text); margin-bottom:16px;
+    }
+    .ss-body {
+      font-size:0.95rem; line-height:1.78; color:rgba(243,240,255,0.62);
+      max-width:460px;
+    }
+    .ss-visual {
+      display:flex; align-items:center; justify-content:center;
+    }
+    .ss-visual svg { width:100%; max-width:360px; height:auto; }
+    /* dot nav */
+    .ss-nav {
+      display:flex; justify-content:center; align-items:center; gap:10px;
+      margin-top:56px;
+    }
+    .ss-dot {
+      width:8px; height:8px; border-radius:50%; padding:0; border:none;
+      background:rgba(168,85,247,0.2); cursor:pointer;
+      transition:background 0.2s, transform 0.2s, width 0.3s;
+    }
+    .ss-dot.active { background:var(--mid); transform:scale(1); width:28px; border-radius:4px; }
+    /* arrow buttons */
+    .ss-arrows { display:flex; gap:8px; justify-content:center; margin-top:24px; }
+    .ss-arrow-btn {
+      width:44px; height:44px; border-radius:12px;
+      background:rgba(124,58,237,0.1); border:1px solid rgba(168,85,247,0.25);
+      color:var(--muted); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .ss-arrow-btn:hover { background:rgba(124,58,237,0.22); border-color:var(--mid); color:var(--text); }
+    .ss-progress {
+      position:absolute; bottom:0; left:0; height:2px;
+      background:linear-gradient(90deg,var(--primary),var(--accent));
+      border-radius:2px; transition:none;
+    }
+
   </style>
 </head>
 <body>
@@ -1060,7 +1180,7 @@
   </div>
   <ul class="nav-links" id="nav-marketing-links">
     <li><a href="#services">Services</a></li>
-    <li><a href="#cases">Case Studies</a></li>
+    <li><a href="#calls">Demos</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -1077,11 +1197,11 @@
   <div class="hero-orb orb-c"></div>
   <div class="hero-content">
     <div class="hero-tag"><span class="hero-tag-dot"></span> AI Receptionist for Service Businesses</div>
-    <h1>Never miss<br />another <span class="gradient-text">booked</span><br />appointment</h1>
+    <h1>Every call answered.<br /><span class="gradient-text" style="display:block;margin-top:0.25em;">Every&nbsp;job&nbsp;booked.</span></h1>
     <p class="hero-sub">AVOMA deploys a fully conversational AI receptionist for your business. It answers every call, books appointments, and sends SMS follow-ups, 24/7, at a fraction of the cost of a human.</p>
     <div class="hero-actions">
       <div class="btn-glow-wrap"><a href="/start" class="btn-primary">Get Your AI Receptionist</a></div>
-      <div class="btn-glow-wrap"><a href="#how-it-works" class="btn-ghost">See How It Works</a></div>
+      <div class="btn-glow-wrap"><a href="#calls" class="btn-ghost">See How It Works</a></div>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num" data-target="98" data-suffix="%">0%</div><div class="stat-label">Call Answer Rate</div></div>
@@ -1287,90 +1407,274 @@
   </div>
 </section>
 
-<section id="testimonials">
+<section id="calls">
   <div class="section-inner">
-    <div class="gal-header reveal">
-      <div>
-        <div class="section-label">Testimonials</div>
-        <h2>Trusted by <span class="gradient-text">service businesses</span></h2>
-      </div>
-      <div class="gal-arrows">
-        <button class="gal-btn" id="gal-prev" aria-label="Previous">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="gal-btn" id="gal-next" aria-label="Next">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+    <div class="section-header reveal">
+      <div class="section-label">Hear It Live</div>
+      <h2>Listen to <span class="gradient-text">AVOMA handle real calls</span></h2>
+      <p class="section-sub">Select an industry below and hear exactly how AVOMA handles inbound calls.</p>
     </div>
+
+    <div class="calls-player glow-border reveal" id="calls-player">
+      <div class="calls-player-header">
+        <div class="calls-industry-tag" id="cp-tag">Roofing</div>
+        <div class="calls-call-type" id="cp-type">First Contact Estimate Request</div>
+      </div>
+      <div class="calls-wave-wrap">
+        <svg class="calls-waveform" id="cp-wave" viewBox="0 0 480 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="calls-progress-wrap">
+        <span class="calls-time" id="cp-elapsed">0:00</span>
+        <div class="calls-progress-bar"><div class="calls-progress-fill" id="cp-fill"></div></div>
+        <span class="calls-time" id="cp-duration">2:35</span>
+      </div>
+      <div class="calls-controls">
+        <button class="calls-ctrl-btn" id="cp-prev" aria-label="Previous call">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+        </button>
+        <button class="calls-play-btn" id="cp-play" aria-label="Play">
+          <svg id="cp-play-icon" width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="calls-ctrl-btn" id="cp-next" aria-label="Next call">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        </button>
+      </div>
+      <p class="calls-note">Demo UI</p>
+    </div>
+
+    <div class="calls-industries reveal reveal-delay-2" id="cp-industries"></div>
   </div>
-  <div class="gal-track-outer">
-    <div class="gal-viewport" id="gal-viewport">
-      <div class="gal-container" id="gal-container">
-        <div class="gal-slide">
-          <a class="gal-card" href="#">
-            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Dr. Rachel Nguyen" loading="lazy" />
-            <div class="gal-overlay"></div>
-            <div class="gal-body">
-              <div class="gal-stars">★★★★★</div>
-              <p class="gal-quote">"Every time we had a patient in the chair, calls were going to voicemail. With AVOMA, every call is answered and appointments book automatically. We've picked up at least 3 to 4 new patients a week we would have just lost."</p>
-              <div class="gal-name">Dr. Rachel Nguyen</div>
-              <div class="gal-role">Owner · Bright Smile Dental</div>
-            </div>
-          </a>
+</section>
+
+<section id="stats-slideshow" style="display:none">
+  <div class="section-inner">
+    <div class="ss-header reveal">
+      <div class="section-label">The Numbers</div>
+      <h2>Why businesses can't afford <span class="gradient-text">to miss calls</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Real data. Real cost. Real urgency.</p>
+    </div>
+
+    <div class="ss-track" id="ss-track">
+
+      <!-- Slide 1: Missed calls = missed revenue -->
+      <div class="ss-slide active" data-index="0">
+        <div class="ss-left">
+          <div class="ss-kicker">The Hidden Cost</div>
+          <div class="ss-stat">62%</div>
+          <div class="ss-headline">of small business calls go unanswered</div>
+          <p class="ss-body">At an average job value of $250, missing just 5 calls a week means $65,000 in lost revenue every year — before a single penny is spent on marketing.</p>
         </div>
-        <div class="gal-slide">
-          <a class="gal-card" href="#">
-            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Mike Tavares" loading="lazy" />
-            <div class="gal-overlay"></div>
-            <div class="gal-body">
-              <div class="gal-stars">★★★★★</div>
-              <p class="gal-quote">"Emergency calls at 11pm used to go to voicemail. We'd wake up and the job was already gone to a competitor. Now the AI answers, collects everything, and I have a confirmed booking waiting for me in the morning."</p>
-              <div class="gal-name">Mike Tavares</div>
-              <div class="gal-role">Owner · Summit HVAC</div>
-            </div>
-          </a>
-        </div>
-        <div class="gal-slide">
-          <a class="gal-card" href="#">
-            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Jess Morales" loading="lazy" />
-            <div class="gal-overlay"></div>
-            <div class="gal-body">
-              <div class="gal-stars">★★★★★</div>
-              <p class="gal-quote">"My front desk was juggling calls, walk-ins, and checkouts all at once. AVOMA handles all the phone bookings now, my staff actually focuses on clients, and we haven't had a missed appointment in over two months."</p>
-              <div class="gal-name">Jess Morales</div>
-              <div class="gal-role">Owner · Haven Salon & Spa</div>
-            </div>
-          </a>
-        </div>
-        <div class="gal-slide">
-          <a class="gal-card" href="#">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Tony Bracco" loading="lazy" />
-            <div class="gal-overlay"></div>
-            <div class="gal-body">
-              <div class="gal-stars">★★★★★</div>
-              <p class="gal-quote">"I was paying $2,400 a month for a part-time receptionist who still couldn't cover lunch or after hours. AVOMA costs a fraction of that, never takes a break, and the SMS follow-ups have brought back customers I'd have never heard from again."</p>
-              <div class="gal-name">Tony Bracco</div>
-              <div class="gal-role">Owner · Bracco Auto Repair</div>
-            </div>
-          </a>
-        </div>
-        <div class="gal-slide">
-          <a class="gal-card" href="#">
-            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080" alt="Dr. Amanda Park" loading="lazy" />
-            <div class="gal-overlay"></div>
-            <div class="gal-body">
-              <div class="gal-stars">★★★★★</div>
-              <p class="gal-quote">"Clients call to book checkups, ask about hours, reschedule appointments. The AI handles all of it. My team finally has time to focus on the animals instead of being stuck on the phone all day."</p>
-              <div class="gal-name">Dr. Amanda Park</div>
-              <div class="gal-role">Owner · Parkside Animal Clinic</div>
-            </div>
-          </a>
+        <div class="ss-visual">
+          <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ss1a" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#e879f9"/></linearGradient>
+              <filter id="ssf1"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- Background circle track -->
+            <circle cx="160" cy="140" r="108" stroke="rgba(168,85,247,0.12)" stroke-width="28"/>
+            <!-- Answered (38%) arc - short arc from top -->
+            <circle cx="160" cy="140" r="108" stroke="rgba(168,85,247,0.25)" stroke-width="28" stroke-dasharray="257 419" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 160 140)"/>
+            <!-- Missed (62%) arc -->
+            <circle cx="160" cy="140" r="108" stroke="url(#ss1a)" stroke-width="28" stroke-dasharray="419 257" stroke-dashoffset="-257" stroke-linecap="round" transform="rotate(-90 160 140)" filter="url(#ssf1)" opacity="0.9"/>
+            <!-- center label -->
+            <text x="160" y="130" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="38" font-weight="900" fill="url(#ss1a)">62%</text>
+            <text x="160" y="158" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" fill="rgba(243,240,255,0.55)">missed</text>
+            <!-- legend -->
+            <rect x="60" y="270" width="12" height="12" rx="3" fill="url(#ss1a)"/>
+            <text x="78" y="281" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.55)">Missed calls (62%)</text>
+            <rect x="186" y="270" width="12" height="12" rx="3" fill="rgba(168,85,247,0.3)"/>
+            <text x="204" y="281" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.55)">Answered (38%)</text>
+          </svg>
         </div>
       </div>
+
+      <!-- Slide 2: Plan pays for itself in one job -->
+      <div class="ss-slide" data-index="1">
+        <div class="ss-left">
+          <div class="ss-kicker">ROI in Day One</div>
+          <div class="ss-stat">$249</div>
+          <div class="ss-headline">per month. One recovered job covers 6 months.</div>
+          <p class="ss-body">At $250 per average service job, recovering just one call per month covers the Starter plan. The math isn't close — AVOMA is the highest-ROI hire you'll ever make.</p>
+        </div>
+        <div class="ss-visual">
+          <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ss2a" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#e879f9"/></linearGradient>
+              <linearGradient id="ss2b" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(168,85,247,0.25)"/><stop offset="100%" stop-color="rgba(168,85,247,0.45)"/></linearGradient>
+            </defs>
+            <!-- Y axis -->
+            <line x1="56" y1="20" x2="56" y2="200" stroke="rgba(168,85,247,0.2)" stroke-width="1"/>
+            <!-- Grid lines -->
+            <line x1="56" y1="200" x2="290" y2="200" stroke="rgba(168,85,247,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="56" y1="155" x2="290" y2="155" stroke="rgba(168,85,247,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="56" y1="110" x2="290" y2="110" stroke="rgba(168,85,247,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="56" y1="65" x2="290" y2="65" stroke="rgba(168,85,247,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+            <!-- Bar: AVOMA plan cost -->
+            <rect x="80" y="186" width="62" height="14" rx="4" fill="url(#ss2b)"/>
+            <text x="111" y="218" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.5)">AVOMA/mo</text>
+            <text x="111" y="231" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" font-weight="700" fill="rgba(168,85,247,0.8)">$249</text>
+            <!-- Bar: 1 job recovered -->
+            <rect x="178" y="155" width="62" height="45" rx="4" fill="url(#ss2b)" opacity="0.7"/>
+            <text x="209" y="218" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.5)">1 job/mo</text>
+            <text x="209" y="231" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" font-weight="700" fill="rgba(168,85,247,0.8)">$250</text>
+            <!-- Bar: yearly revenue recovered -->
+            <rect x="178" y="35" width="62" height="165" rx="4" fill="url(#ss2a)" opacity="0" id="ss2-bigbar"/>
+            <rect x="80" y="35" width="62" height="165" rx="4" fill="url(#ss2b)" opacity="0" id="ss2-smallbar"/>
+            <!-- Animated bars (shown via slide activation) -->
+            <rect class="ss2-bar-plan" x="80" y="186" width="62" height="14" rx="4" fill="url(#ss2b)"/>
+            <rect class="ss2-bar-job" x="178" y="110" width="62" height="90" rx="4" fill="url(#ss2a)" opacity="0.85"/>
+            <!-- Labels on bars -->
+            <text x="111" y="181" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="9" fill="rgba(168,85,247,0.8)">$249</text>
+            <text x="209" y="105" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="9" fill="rgba(232,121,249,0.9)">$250</text>
+            <!-- Value labels left -->
+            <text x="50" y="204" text-anchor="end" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(243,240,255,0.3)">$0</text>
+            <text x="50" y="159" text-anchor="end" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(243,240,255,0.3)">$125</text>
+            <text x="50" y="114" text-anchor="end" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(243,240,255,0.3)">$250</text>
+            <text x="50" y="69" text-anchor="end" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(243,240,255,0.3)">$375</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slide 3: Receptionist vs AVOMA cost -->
+      <div class="ss-slide" data-index="2">
+        <div class="ss-left">
+          <div class="ss-kicker">Cost Comparison</div>
+          <div class="ss-stat">96%</div>
+          <div class="ss-headline">cheaper than a full-time receptionist</div>
+          <p class="ss-body">A full-time front desk costs $45,000/yr in salary — before benefits, sick days, or turnover. AVOMA starts at $1,788/yr and never takes a day off.</p>
+        </div>
+        <div class="ss-visual">
+          <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ss3a" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#e879f9"/></linearGradient>
+              <linearGradient id="ss3b" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="rgba(168,85,247,0.3)"/><stop offset="100%" stop-color="rgba(168,85,247,0.5)"/></linearGradient>
+            </defs>
+            <!-- Receptionist bar (tall) -->
+            <rect x="50" y="32" width="90" height="168" rx="6" fill="url(#ss3b)"/>
+            <text x="95" y="26" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="rgba(168,85,247,0.85)">$45,000</text>
+            <text x="95" y="220" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.55)">Receptionist</text>
+            <text x="95" y="234" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.35)">per year</text>
+            <!-- AVOMA bar (tiny) -->
+            <rect x="182" y="193" width="90" height="7" rx="4" fill="url(#ss3a)"/>
+            <text x="227" y="186" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" fill="rgba(232,121,249,0.95)">$1,788</text>
+            <text x="227" y="220" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.55)">AVOMA</text>
+            <text x="227" y="234" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.35)">per year</text>
+            <!-- savings badge -->
+            <rect x="134" y="88" width="54" height="24" rx="8" fill="rgba(124,58,237,0.25)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/>
+            <text x="161" y="104" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" font-weight="700" fill="#e879f9">96% off</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slide 4: 24/7 vs 9-5 coverage -->
+      <div class="ss-slide" data-index="3">
+        <div class="ss-left">
+          <div class="ss-kicker">Always On</div>
+          <div class="ss-stat">40%</div>
+          <div class="ss-headline">of calls come in after business hours</div>
+          <p class="ss-body">Your receptionist goes home at 5 PM. Evenings, weekends, and holidays account for nearly half your call volume — and every one of those goes straight to voicemail without AVOMA.</p>
+        </div>
+        <div class="ss-visual">
+          <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ss4a" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#e879f9"/></linearGradient>
+              <linearGradient id="ss4b" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(168,85,247,0.25)"/><stop offset="100%" stop-color="rgba(124,58,237,0.15)"/></linearGradient>
+              <filter id="ssf4"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- Clock face -->
+            <circle cx="160" cy="130" r="100" stroke="rgba(168,85,247,0.15)" stroke-width="2"/>
+            <circle cx="160" cy="130" r="100" stroke="rgba(168,85,247,0.08)" stroke-width="24"/>
+            <!-- After-hours arc (60% of clock = evening/night/weekend — colored) -->
+            <!-- 9am to 5pm = 8 hours = 120deg arc (covered) -->
+            <!-- after hours = remaining 240deg -->
+            <circle cx="160" cy="130" r="100" stroke="url(#ss4b)" stroke-width="24" stroke-dasharray="251 377" stroke-dashoffset="0" transform="rotate(-90 160 130)" stroke-linecap="butt"/>
+            <circle cx="160" cy="130" r="100" stroke="url(#ss4a)" stroke-width="24" stroke-dasharray="251 377" stroke-dashoffset="-251" transform="rotate(-90 160 130)" filter="url(#ssf4)" opacity="0.9" stroke-linecap="butt"/>
+            <!-- Clock center -->
+            <circle cx="160" cy="130" r="6" fill="url(#ss4a)"/>
+            <!-- Hour hand pointing to ~9 (9 o'clock position = left) -->
+            <line x1="160" y1="130" x2="100" y2="130" stroke="rgba(168,85,247,0.6)" stroke-width="3" stroke-linecap="round"/>
+            <!-- Minute hand pointing to 12 -->
+            <line x1="160" y1="130" x2="160" y2="60" stroke="rgba(243,240,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+            <!-- Hour labels -->
+            <text x="160" y="42" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="12" fill="rgba(243,240,255,0.4)">12</text>
+            <text x="267" y="134" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="12" fill="rgba(243,240,255,0.4)">3</text>
+            <text x="160" y="242" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="12" fill="rgba(243,240,255,0.4)">6</text>
+            <text x="50" y="134" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="12" fill="rgba(243,240,255,0.4)">9</text>
+            <!-- Labels -->
+            <text x="160" y="118" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.4)">after hours</text>
+            <text x="160" y="132" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="16" font-weight="900" fill="url(#ss4a)">40%</text>
+            <text x="160" y="148" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.3)">of all calls</text>
+            <!-- legend -->
+            <rect x="54" y="262" width="12" height="8" rx="2" fill="url(#ss4a)"/>
+            <text x="72" y="270" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.5)">After hours (40%)</text>
+            <rect x="178" y="262" width="12" height="8" rx="2" fill="url(#ss4b)"/>
+            <text x="196" y="270" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.5)">Business hours (60%)</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Slide 5: 85% won't call back -->
+      <div class="ss-slide" data-index="4">
+        <div class="ss-left">
+          <div class="ss-kicker">No Second Chances</div>
+          <div class="ss-stat">85%</div>
+          <div class="ss-headline">of callers won't leave a voicemail or call back</div>
+          <p class="ss-body">That first ring is your only shot. If AVOMA doesn't answer it, it's gone. No voicemail. No callback. Just another job booked with whoever picked up first.</p>
+        </div>
+        <div class="ss-visual">
+          <svg viewBox="0 0 320 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ss5a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#e879f9"/></linearGradient>
+              <linearGradient id="ss5b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(168,85,247,0.5)"/><stop offset="100%" stop-color="rgba(168,85,247,0.1)"/></linearGradient>
+            </defs>
+            <!-- Funnel stages -->
+            <!-- Stage 1: 100 calls -->
+            <rect x="60" y="30" width="200" height="42" rx="6" fill="url(#ss5b)" opacity="0.6"/>
+            <text x="160" y="56" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="12" font-weight="600" fill="rgba(243,240,255,0.8)">100 inbound calls</text>
+            <!-- Arrow down -->
+            <polygon points="160,78 148,92 172,92" fill="rgba(168,85,247,0.3)"/>
+            <!-- Stage 2: 15 leave voicemail -->
+            <rect x="103" y="97" width="114" height="38" rx="6" fill="url(#ss5b)" opacity="0.5"/>
+            <text x="160" y="121" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.7)">15 leave voicemail</text>
+            <!-- Arrow down -->
+            <polygon points="160,141 152,153 168,153" fill="rgba(168,85,247,0.25)"/>
+            <!-- Stage 3: ~8 get called back -->
+            <rect x="120" y="158" width="80" height="34" rx="6" fill="url(#ss5b)" opacity="0.4"/>
+            <text x="160" y="180" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="rgba(243,240,255,0.6)">~8 book a job</text>
+            <!-- Lost label -->
+            <rect x="56" y="97" width="40" height="95" rx="4" fill="rgba(232,121,249,0.06)" stroke="rgba(232,121,249,0.2)" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="76" y="148" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="14" fill="url(#ss5a)" font-weight="900">85</text>
+            <text x="76" y="163" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="rgba(232,121,249,0.7)">lost</text>
+            <!-- AVOMA badge -->
+            <rect x="214" y="26" width="84" height="50" rx="8" fill="rgba(124,58,237,0.2)" stroke="rgba(168,85,247,0.4)" stroke-width="1"/>
+            <text x="256" y="46" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(243,240,255,0.5)">With AVOMA</text>
+            <text x="256" y="62" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="13" font-weight="900" fill="#e879f9">100%</text>
+            <text x="256" y="74" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="rgba(232,121,249,0.7)">answered</text>
+            <!-- bottom note -->
+            <text x="160" y="242" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(243,240,255,0.3)">Without AVOMA: 92 callers go somewhere else</text>
+          </svg>
+        </div>
+      </div>
+
+    </div><!-- /.ss-track -->
+
+    <div class="ss-nav" id="ss-nav">
+      <button class="ss-dot active" data-ss="0" aria-label="Slide 1"></button>
+      <button class="ss-dot" data-ss="1" aria-label="Slide 2"></button>
+      <button class="ss-dot" data-ss="2" aria-label="Slide 3"></button>
+      <button class="ss-dot" data-ss="3" aria-label="Slide 4"></button>
+      <button class="ss-dot" data-ss="4" aria-label="Slide 5"></button>
     </div>
+    <div class="ss-arrows">
+      <button class="ss-arrow-btn" id="ss-prev" aria-label="Previous slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="ss-arrow-btn" id="ss-next" aria-label="Next slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
   </div>
-  <div class="gal-nav" id="gal-nav"></div>
 </section>
 
 <section id="pricing">
@@ -1385,8 +1689,8 @@
       <!-- Starter -->
       <div class="pricing-card glow-border reveal">
         <div class="pricing-tier">Starter</div>
-        <div class="pricing-price">$149<span>/mo</span></div>
-        <div class="pricing-calls">Up to 150 calls · ~8 hrs/mo</div>
+        <div class="pricing-price">$249<span>/mo</span></div>
+        <div class="pricing-calls">Up to 120 calls · ~8 hrs/mo</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li>
@@ -1417,8 +1721,8 @@
       <div class="pricing-card featured glow-border reveal reveal-delay-1">
         <div class="pricing-badge">Most Popular</div>
         <div class="pricing-tier">Growth</div>
-        <div class="pricing-price">$299<span>/mo</span></div>
-        <div class="pricing-calls">Up to 350 calls · ~20 hrs/mo</div>
+        <div class="pricing-price">$449<span>/mo</span></div>
+        <div class="pricing-calls">Up to 300 calls · ~20 hrs/mo</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li>
@@ -1452,8 +1756,8 @@
       <!-- Pro -->
       <div class="pricing-card glow-border reveal reveal-delay-2">
         <div class="pricing-tier">Pro</div>
-        <div class="pricing-price">$499<span>/mo</span></div>
-        <div class="pricing-calls">Up to 700 calls · ~35 hrs/mo</div>
+        <div class="pricing-price">$649<span>/mo</span></div>
+        <div class="pricing-calls">Up to 525 calls · ~35 hrs/mo</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li>
@@ -1624,11 +1928,12 @@
           <span>Response within 24 hours</span>
         </div>
       </div>
-      <form class="contact-form reveal reveal-delay-2" onsubmit="return false;">
-        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Jane Smith" /></div>
-        <div class="form-group"><label>Work Email</label><input type="email" placeholder="jane@company.com" /></div>
-        <div class="form-group"><label>Message</label><textarea placeholder="Tell us about your business: industry, call volume, what you need covered..."></textarea></div>
-        <div class="btn-glow-wrap btn-glow-block"><button type="submit" class="btn-submit">Send Message</button></div>
+      <form id="contact-form" class="contact-form reveal reveal-delay-2">
+        <div class="form-group"><label>Your Name</label><input id="cf-name" type="text" placeholder="Jane Smith" /></div>
+        <div class="form-group"><label>Work Email</label><input id="cf-email" type="email" placeholder="jane@company.com" /></div>
+        <div class="form-group"><label>Message</label><textarea id="cf-message" placeholder="Tell us about your business: industry, call volume, what you need covered..."></textarea></div>
+        <div class="btn-glow-wrap btn-glow-block"><button id="cf-btn" type="submit" class="btn-submit">Send Message</button></div>
+        <p id="cf-success" style="display:none;text-align:center;color:#a855f7;font-size:0.95rem;margin-top:1rem;letter-spacing:0.01em;">Message sent — we'll be in touch within 24 hours.</p>
       </form>
     </div>
   </div>
@@ -1650,8 +1955,8 @@
       </a>
     </li>
     <li class="dock-item">
-      <a href="#cases" class="dock-link">
-        <span class="dock-tooltip">Case Studies</span>
+      <a href="#calls" class="dock-link">
+        <span class="dock-tooltip">Demos</span>
         <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="dg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#e879f9"/></linearGradient></defs><path d="M3 18 L7 14 L11 10 L15 8 L21 3 L21 19 L3 19 Z" fill="url(#dg3)" opacity="0.1"/><polyline points="3,18 7,14 11,10 15,8" stroke="url(#dg3)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="15" y1="8" x2="21" y2="3" stroke="#e879f9" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="2.5 2"/><circle cx="3" cy="18" r="1.8" fill="url(#dg3)"/><circle cx="7" cy="14" r="1.8" fill="url(#dg3)"/><circle cx="11" cy="10" r="1.8" fill="url(#dg3)"/><circle cx="15" cy="8" r="2.2" fill="#e879f9"/></svg>
       </a>
     </li>
@@ -1772,65 +2077,112 @@
     });
   })();
 
-  /* ── Testimonials Carousel ── */
+  /* ── Example Calls Player ── */
   (function() {
-    const container = document.getElementById('gal-container');
-    const viewport  = document.getElementById('gal-viewport');
-    const navEl     = document.getElementById('gal-nav');
-    const prevBtn   = document.getElementById('gal-prev');
-    const nextBtn   = document.getElementById('gal-next');
-    if (!container) return;
+    const CALLS = [
+      { industry: 'Roofing',     type: 'First Contact Estimate Request',       duration: 155 },
+      { industry: 'Dental',      type: 'First Contact New Patient Inquiry',    duration: 107 },
+      { industry: 'HVAC',        type: 'First Contact Service Request',        duration: 143 },
+      { industry: 'Medical',     type: 'First Contact New Patient Inquiry',    duration: 131 },
+      { industry: 'Law Firm',    type: 'First Contact Case Inquiry',           duration: 118 },
+      { industry: 'Salon & Spa', type: 'First Contact New Client Booking',     duration:  92 },
+      { industry: 'Auto Repair', type: 'First Contact Service Inquiry',        duration: 104 },
+      { industry: 'Plumbing',    type: 'First Contact Emergency Request',      duration:  88 },
+      { industry: 'Veterinary',  type: 'First Contact New Pet Inquiry',        duration: 125 },
+    ];
 
-    const slides = container.querySelectorAll('.gal-slide');
-    const N = slides.length;
-    let current = 0;
-    let startX = 0, startScroll = 0, isDragging = false;
+    const svg = document.getElementById('cp-wave');
+    if (!svg) return;
 
-    function slideWidth() {
-      return slides[0].getBoundingClientRect().width + 20; // width + CSS gap
+    // Build waveform bars
+    const NUM = 52, BAR_W = 6;
+    const GAP = (480 - NUM * BAR_W) / (NUM - 1);
+    let svgHTML = '';
+    for (let i = 0; i < NUM; i++) {
+      const pos = i / NUM;
+      const env = Math.sin(pos * Math.PI) * 0.68 + 0.18;
+      const h   = Math.max(5, Math.min(68, env * (0.45 + Math.random() * 0.55) * 74));
+      const x   = (i * (BAR_W + GAP)).toFixed(1);
+      const y   = ((80 - h) / 2).toFixed(1);
+      const delay = (Math.random() * 0.55).toFixed(3);
+      const dur   = (0.6 + Math.random() * 0.65).toFixed(3);
+      svgHTML += `<rect class="wv" x="${x}" y="${y}" width="${BAR_W}" height="${h.toFixed(1)}" rx="3" style="animation-delay:${delay}s;animation-duration:${dur}s"/>`;
     }
+    svg.innerHTML = svgHTML;
 
-    function goTo(idx) {
-      current = Math.max(0, Math.min(N - 1, idx));
-      container.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
-      container.style.transform = `translateX(-${current * slideWidth()}px)`;
-      navEl.querySelectorAll('.gal-dot').forEach((d, i) => d.classList.toggle('active', i === current));
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === N - 1;
-    }
-
-    // Build dots
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.className = 'gal-dot' + (i === 0 ? ' active' : '');
-      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-      dot.addEventListener('click', () => goTo(i));
-      navEl.appendChild(dot);
+    // Build industry pills
+    const pillsEl = document.getElementById('cp-industries');
+    if (!pillsEl) return;
+    CALLS.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'cp-pill' + (i === 0 ? ' active' : '');
+      btn.textContent = c.industry;
+      btn.addEventListener('click', () => selectCall(i));
+      pillsEl.appendChild(btn);
     });
 
-    prevBtn.disabled = true;
-    prevBtn.addEventListener('click', () => goTo(current - 1));
-    nextBtn.addEventListener('click', () => goTo(current + 1));
+    // DOM refs
+    const player    = document.getElementById('calls-player');
+    const tagEl     = document.getElementById('cp-tag');
+    const typeEl    = document.getElementById('cp-type');
+    const durEl     = document.getElementById('cp-duration');
+    const elapsedEl = document.getElementById('cp-elapsed');
+    const fillEl    = document.getElementById('cp-fill');
+    const playIcon  = document.getElementById('cp-play-icon');
 
-    // Drag / swipe
-    function dragStart(x) { isDragging = true; startX = x; startScroll = current * slideWidth(); container.style.transition = 'none'; }
-    function dragMove(x)  { if (!isDragging) return; container.style.transform = `translateX(-${startScroll + (startX - x)}px)`; }
-    function dragEnd(x)   {
-      if (!isDragging) return; isDragging = false;
-      const delta = startX - x;
-      if (Math.abs(delta) > 50) { goTo(delta > 0 ? current + 1 : current - 1); }
-      else { goTo(current); }
+    let currentIdx = 0, playing = false, elapsed = 0, timer = null;
+    const fmt = s => Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+
+    function updateDisplay() {
+      const c = CALLS[currentIdx];
+      tagEl.textContent     = c.industry;
+      typeEl.textContent    = c.type;
+      durEl.textContent     = fmt(c.duration);
+      elapsedEl.textContent = fmt(elapsed);
+      fillEl.style.width    = (elapsed / c.duration * 100) + '%';
     }
 
-    container.addEventListener('mousedown',  e => dragStart(e.clientX));
-    window.addEventListener   ('mousemove',  e => { if (isDragging) dragMove(e.clientX); });
-    window.addEventListener   ('mouseup',    e => dragEnd(e.clientX));
-    container.addEventListener('touchstart', e => dragStart(e.touches[0].clientX), { passive:true });
-    container.addEventListener('touchmove',  e => { if (isDragging) dragMove(e.touches[0].clientX); }, { passive:true });
-    container.addEventListener('touchend',   e => dragEnd(e.changedTouches[0].clientX));
+    function stopPlayback() {
+      if (timer) { clearInterval(timer); timer = null; }
+      playing = false;
+      player.classList.remove('cp-playing');
+      playIcon.setAttribute('viewBox','0 0 24 24');
+      playIcon.setAttribute('fill','currentColor');
+      playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+    }
 
-    // Recalc on resize
-    window.addEventListener('resize', () => { container.style.transition = 'none'; container.style.transform = `translateX(-${current * slideWidth()}px)`; });
+    function selectCall(idx) {
+      stopPlayback();
+      elapsed = 0;
+      currentIdx = idx;
+      pillsEl.querySelectorAll('.cp-pill').forEach((p, i) => p.classList.toggle('active', i === idx));
+      updateDisplay();
+    }
+
+    function startPlayback() {
+      playing = true;
+      player.classList.add('cp-playing');
+      playIcon.setAttribute('fill','currentColor');
+      playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/>';
+      timer = setInterval(() => {
+        elapsed++;
+        if (elapsed >= CALLS[currentIdx].duration) {
+          elapsed = CALLS[currentIdx].duration;
+          updateDisplay();
+          stopPlayback();
+          elapsed = 0;
+          updateDisplay();
+          return;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    document.getElementById('cp-play').addEventListener('click', () => playing ? stopPlayback() : startPlayback());
+    document.getElementById('cp-prev').addEventListener('click', () => selectCall((currentIdx - 1 + CALLS.length) % CALLS.length));
+    document.getElementById('cp-next').addEventListener('click', () => selectCall((currentIdx + 1) % CALLS.length));
+
+    updateDisplay();
   })();
 
   /* ── Page Loader + Hero Shutter ── */
@@ -1866,7 +2218,7 @@
     line2.style.animationDelay = line2Start.toFixed(3) + 's';
 
     // Exit: wait for remarkable + pause, minimum 2.7s so progress bar completes
-    var exitAt = Math.max((line2Start + 0.65 + 0.45) * 1000, 2700);
+    var exitAt = Math.max((line2Start + 0.65 + 0.45) * 1000, 1000);
 
     // Build hero h1 shutter chars — called on loader exit so delays count from reveal
     function buildHeroShutter() {
@@ -2250,6 +2602,106 @@
   })();
 </script>
 <!-- ═══════════════════════════════ /FOOTER ══════════════════════════════ -->
+
+<script>
+// ── Stats Slideshow ──────────────────────────────────────────────────────────
+(function(){
+  var slides = document.querySelectorAll('.ss-slide');
+  var dots   = document.querySelectorAll('.ss-dot[data-ss]');
+  var prevBtn = document.getElementById('ss-prev');
+  var nextBtn = document.getElementById('ss-next');
+  var current = 0;
+  var total   = slides.length;
+  var timer   = null;
+  var INTERVAL = 5500;
+
+  function goTo(idx) {
+    // Exit current
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    dots[current].classList.remove('active');
+
+    setTimeout(function(){
+      slides[current].classList.remove('exit');
+    }, 600);
+
+    current = (idx + total) % total;
+
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function startAuto() {
+    clearInterval(timer);
+    timer = setInterval(next, INTERVAL);
+  }
+
+  function resetAuto() {
+    clearInterval(timer);
+    startAuto();
+  }
+
+  if (nextBtn) nextBtn.addEventListener('click', function(){ resetAuto(); next(); });
+  if (prevBtn) prevBtn.addEventListener('click', function(){ resetAuto(); prev(); });
+
+  dots.forEach(function(dot){
+    dot.addEventListener('click', function(){
+      var idx = parseInt(this.getAttribute('data-ss'));
+      resetAuto();
+      goTo(idx);
+    });
+  });
+
+  // Pause on hover
+  var track = document.getElementById('ss-track');
+  if (track) {
+    track.addEventListener('mouseenter', function(){ clearInterval(timer); });
+    track.addEventListener('mouseleave', function(){ startAuto(); });
+  }
+
+  // Touch swipe support
+  var touchStartX = 0;
+  if (track) {
+    track.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; }, {passive:true});
+    track.addEventListener('touchend', function(e){
+      var dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) { resetAuto(); dx < 0 ? next() : prev(); }
+    }, {passive:true});
+  }
+
+  startAuto();
+})();
+</script>
+
+<script>
+/* ── Contact Form ── */
+(function() {
+  var form = document.getElementById('contact-form');
+  if (!form) return;
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var name    = document.getElementById('cf-name').value.trim();
+    var email   = document.getElementById('cf-email').value.trim();
+    var message = document.getElementById('cf-message').value.trim();
+    if (!name || !email || !message) return;
+    var btn = document.getElementById('cf-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      await fetch('https://app.callavoma.com/webhook/avoma-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, message: message, source: 'callavoma.com/contact' })
+      });
+    } catch (_) {}
+    btn.style.display = 'none';
+    document.getElementById('cf-success').style.display = 'block';
+  });
+})();
+</script>
 
 </body>
 </html>

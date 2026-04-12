@@ -360,13 +360,16 @@
       border-color: rgba(168,85,247,0.35);
       background: rgba(124,58,237,0.06);
     }
-    .service-item input[type="checkbox"] {
-      flex-shrink: 0; margin-top: 2px;
-      width: 15px; height: 15px;
-      accent-color: var(--primary);
-      cursor: pointer;
-      padding: 0; border: none; background: none;
-      box-shadow: none;
+    .service-item input[type="radio"] {
+      display: none;
+    }
+    .service-item:has(input:checked) {
+      border-color: rgba(168,85,247,0.7);
+      background: rgba(124,58,237,0.18);
+      box-shadow: 0 0 16px rgba(124,58,237,0.22);
+    }
+    .service-item:has(input:checked) .service-label {
+      color: #f3f0ff;
     }
     .service-item input:focus { box-shadow: none; border-color: transparent; background: transparent; }
     .service-item .service-label { font-size: 0.8rem; font-weight: 500; color: var(--text); font-family: 'Space Grotesk', sans-serif; line-height: 1.4; }
@@ -526,7 +529,7 @@
           <div class="step-num">03</div>
           <div class="step-body">
             <div class="step-title">Go live in days</div>
-            <div class="step-desc">Your AI receptionist is configured, tested, and live — handling calls on day one.</div>
+            <div class="step-desc">Your AI receptionist is configured, tested, and live. Handling calls on day one.</div>
           </div>
         </div>
       </div>
@@ -637,28 +640,28 @@
           <div class="section-heading">What do you need?</div>
           <div class="service-grid">
             <label class="service-item">
-              <input type="checkbox" name="service" value="ai_receptionist" />
+              <input type="radio" name="service" value="ai_receptionist" />
               <div>
                 <div class="service-label">AI Receptionist</div>
                 <div class="service-desc">Inbound calls, booking, SMS follow-ups</div>
               </div>
             </label>
             <label class="service-item">
-              <input type="checkbox" name="service" value="web_design" />
+              <input type="radio" name="service" value="web_design" />
               <div>
                 <div class="service-label">Website Design</div>
                 <div class="service-desc">Built and hosted for your business</div>
               </div>
             </label>
             <label class="service-item">
-              <input type="checkbox" name="service" value="both" />
+              <input type="radio" name="service" value="both" />
               <div>
                 <div class="service-label">Full Package</div>
                 <div class="service-desc">AI receptionist + new website</div>
               </div>
             </label>
             <label class="service-item">
-              <input type="checkbox" name="service" value="unsure" />
+              <input type="radio" name="service" value="unsure" />
               <div>
                 <div class="service-label">Not sure yet</div>
                 <div class="service-desc">I want to learn more first</div>
@@ -799,7 +802,7 @@
         notes:          document.getElementById('message').value.trim(),
       };
 
-      await fetch('https://app.callavoma.com/api/webhooks/avoma-intake', {
+      await fetch('https://app.callavoma.com/webhook/avoma-intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
