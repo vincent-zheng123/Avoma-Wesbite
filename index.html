@@ -190,7 +190,7 @@
       height:100%; width:0%;
       background:linear-gradient(90deg,var(--primary),var(--accent));
       border-radius:2px;
-      animation:lbarFill 2.1s cubic-bezier(0.4,0,0.2,1) 0.4s forwards;
+      animation:lbarFill 1.0s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
       box-shadow:0 0 8px rgba(232,121,249,0.65);
     }
     @keyframes lbarShow { to { opacity:1; } }
@@ -2197,8 +2197,8 @@
 
     // Inject character spans for "Let's build something"
     var text  = "Welcome to";
-    var delay = 0.48;
-    var step  = 0.038;
+    var delay = 0.18;
+    var step  = 0.02;
 
     text.split('').forEach(function(ch) {
       if (ch === ' ') {
@@ -2217,8 +2217,9 @@
     var line2Start = delay - step + 0.06;
     line2.style.animationDelay = line2Start.toFixed(3) + 's';
 
-    // Exit: wait for remarkable + pause, minimum 2.7s so progress bar completes
-    var exitAt = Math.max((line2Start + 0.65 + 0.45) * 1000, 1000);
+    // Exit: wait for remarkable + pause, minimum 1.5s so progress bar completes
+    var exitAt = Math.max((line2Start + 0.65 + 0.45) * 1000, 1500);
+
 
     // Build hero h1 shutter chars — called on loader exit so delays count from reveal
     function buildHeroShutter() {
