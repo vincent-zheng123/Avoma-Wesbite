@@ -48,8 +48,7 @@
       background:rgba(6,4,15,0.75);
       backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
-      -webkit-transform:translateZ(0); transform:translateZ(0);
-      will-change:transform;
+      transition:transform 0.3s ease;
     }
     .brand {
       display:flex; align-items:center; gap:12px;
@@ -812,11 +811,11 @@
     @media(max-width:580px){
       .services-grid,.cases-grid { grid-template-columns:1fr; }
       #hero { padding-top: 80px; }
-      #hero h1 { font-size: clamp(1.6rem, 7.5vw, 2.5rem); white-space: nowrap; }
+      #hero h1 { font-size: clamp(1.85rem, 7.5vw, 2.5rem); white-space: nowrap; }
       nav { padding:12px 16px; }
-      nav > div:last-child { gap:8px; }
-      nav > div:last-child > a.btn-ghost { display:none; }
-      nav > div:last-child .btn-nav { padding:8px 16px; font-size:0.82rem; white-space:nowrap; }
+      nav > div:last-child { gap:6px; }
+      nav > div:last-child > a.btn-ghost { padding:6px 10px !important; font-size:0.75rem !important; white-space:nowrap; opacity:0.8; }
+      nav > div:last-child .btn-nav { padding:7px 14px; font-size:0.8rem; white-space:nowrap; }
     }
 
     /* ── How It Works ── */
@@ -2316,6 +2315,22 @@
 
     window.addEventListener('scroll', function() {
       updateCards(lastX, lastY);
+    }, { passive: true });
+  })();
+
+  // Hide nav on scroll down (mobile only), show on scroll up
+  (function() {
+    var nav = document.querySelector('body > nav');
+    var lastY = 0;
+    window.addEventListener('scroll', function() {
+      if (window.innerWidth > 580) { nav.style.transform = ''; return; }
+      var y = window.scrollY;
+      if (y > lastY && y > 80) {
+        nav.style.transform = 'translateY(-100%)';
+      } else {
+        nav.style.transform = 'translateY(0)';
+      }
+      lastY = y;
     }, { passive: true });
   })();
 
