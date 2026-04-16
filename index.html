@@ -48,7 +48,6 @@
       background:rgba(6,4,15,0.75);
       backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
-      clip-path:inset(0 0 0 0);
     }
     .brand {
       display:flex; align-items:center; gap:12px;
@@ -2380,27 +2379,6 @@
     }, { passive: true });
   })();
 
-  // Hide nav on scroll down (mobile only), show on scroll up
-  (function() {
-    var nav = document.querySelector('body > nav');
-    var drawer = document.getElementById('nav-mobile-drawer');
-    var lastY = 0;
-    window.addEventListener('scroll', function() {
-      if (window.innerWidth > 580) { nav.style.clipPath = ''; nav.style.opacity = ''; return; }
-      var y = window.scrollY;
-      if (y > lastY && y > 1) {
-        nav.style.transition = 'none';
-        nav.style.clipPath = 'inset(100% 0 0 0)';
-        nav.style.opacity = '0';
-        drawer.classList.remove('open');
-      } else if (y < 60) {
-        nav.style.transition = 'clip-path 0.22s ease, opacity 0.22s ease';
-        nav.style.clipPath = 'inset(0 0 0 0)';
-        nav.style.opacity = '1';
-      }
-      lastY = y;
-    }, { passive: true });
-  })();
 
   // Hamburger toggle
   (function() {
