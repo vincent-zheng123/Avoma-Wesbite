@@ -862,9 +862,15 @@
       .brand-text { font-size:1.05rem; }
       .nav-desktop-ctas { display:none !important; }
       .nav-hamburger { display:flex; }
-      /* Orbs: lighter blur, no animation (animation was causing scroll repaint) */
-      .hero-orb { filter:blur(50px) !important; animation:none !important; }
+      /* Replace orbs with static bg gradients — filter:blur on overflow:hidden is clipped by iOS */
+      .hero-orb { display:none; }
       #neural-canvas { display:none; }
+      #hero {
+        background:
+          radial-gradient(ellipse 90% 55% at 15% 25%, rgba(124,58,237,0.45) 0%, transparent 60%),
+          radial-gradient(ellipse 65% 50% at 90% 45%, rgba(232,121,249,0.28) 0%, transparent 55%),
+          radial-gradient(ellipse 55% 55% at 50% 95%, rgba(168,85,247,0.22) 0%, transparent 50%);
+      }
     }
 
     /* ── How It Works ── */
