@@ -48,7 +48,9 @@
       background:rgba(6,4,15,0.75);
       backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
+      transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
     }
+    body > nav.nav-hidden { transform:translateY(-100%); transition:transform 0.18s ease-in; }
     /* Extend nav background upward to cover status bar on any device */
     body > nav::before {
       content:''; position:absolute; top:-100px; left:0; right:0; height:100px;
@@ -2403,6 +2405,23 @@
     drawer.querySelectorAll('a').forEach(function(a) {
       a.addEventListener('click', function() { drawer.classList.remove('open'); });
     });
+  })();
+
+  /* ── Nav hide on scroll down, show on scroll up ── */
+  (function() {
+    var nav = document.querySelector('body > nav');
+    var drawer = document.getElementById('nav-mobile-drawer');
+    var lastY = window.scrollY;
+    window.addEventListener('scroll', function() {
+      var y = window.scrollY;
+      if (y > lastY && y > 20) {
+        nav.classList.add('nav-hidden');
+        if (drawer) drawer.classList.remove('open');
+      } else if (y < lastY) {
+        nav.classList.remove('nav-hidden');
+      }
+      lastY = y;
+    }, { passive: true });
   })();
 
 </script>
