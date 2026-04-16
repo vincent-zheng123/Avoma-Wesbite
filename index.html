@@ -48,7 +48,8 @@
       background:rgba(6,4,15,0.75);
       backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
       border-bottom:1px solid var(--border);
-      transition:transform 0.3s ease;
+      transition:transform 0.25s ease, opacity 0.25s ease;
+      transform-origin:top center;
     }
     .brand {
       display:flex; align-items:center; gap:12px;
@@ -867,9 +868,9 @@
       #neural-canvas { display:none; }
       #hero {
         background:
-          radial-gradient(ellipse 90% 55% at 15% 25%, rgba(124,58,237,0.65) 0%, transparent 60%),
-          radial-gradient(ellipse 65% 50% at 90% 45%, rgba(232,121,249,0.45) 0%, transparent 55%),
-          radial-gradient(ellipse 55% 55% at 50% 95%, rgba(168,85,247,0.35) 0%, transparent 50%);
+          radial-gradient(ellipse 100% 60% at 10% 20%, rgba(124,58,237,0.8) 0%, transparent 55%),
+          radial-gradient(ellipse 70% 55% at 95% 50%, rgba(232,121,249,0.6) 0%, transparent 50%),
+          radial-gradient(ellipse 60% 50% at 50% 100%, rgba(168,85,247,0.45) 0%, transparent 50%);
       }
     }
 
@@ -2386,13 +2387,15 @@
     var drawer = document.getElementById('nav-mobile-drawer');
     var lastY = 0;
     window.addEventListener('scroll', function() {
-      if (window.innerWidth > 580) { nav.style.transform = ''; return; }
+      if (window.innerWidth > 580) { nav.style.transform = ''; nav.style.opacity = ''; return; }
       var y = window.scrollY;
       if (y > lastY && y > 1) {
-        nav.style.transform = 'translateY(-100%)';
+        nav.style.transform = 'scaleY(0)';
+        nav.style.opacity = '0';
         drawer.classList.remove('open');
       } else if (y < 60) {
-        nav.style.transform = 'translateY(0)';
+        nav.style.transform = 'scaleY(1)';
+        nav.style.opacity = '1';
       }
       lastY = y;
     }, { passive: true });
