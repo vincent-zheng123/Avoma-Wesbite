@@ -822,20 +822,23 @@
       background:var(--text); transition:opacity 0.2s, transform 0.2s;
     }
     .nav-mobile-drawer {
-      display:none; position:fixed; top:54px; left:0; right:0; z-index:99;
-      flex-direction:column; gap:4px; padding:12px 16px 16px;
+      display:none; position:fixed; top:64px; left:0; right:0; z-index:99;
+      flex-direction:column; gap:8px; padding:12px 16px 16px;
       background:rgba(6,4,15,0.97);
       border-bottom:1px solid var(--border);
     }
     .nav-mobile-drawer.open { display:flex; }
     .nav-drawer-link {
-      padding:13px 16px; border-radius:10px; font-size:0.92rem;
+      padding:12px 16px; border-radius:100px; font-size:0.92rem;
       color:var(--muted); text-decoration:none; font-weight:500;
-      transition:color 0.2s, background 0.2s;
+      border:1px solid rgba(168,85,247,0.25);
+      background:rgba(124,58,237,0.07);
+      text-align:center;
+      transition:color 0.2s, background 0.2s, border-color 0.2s;
     }
-    .nav-drawer-link:hover { color:var(--text); background:rgba(168,85,247,0.08); }
+    .nav-drawer-link:hover { color:var(--text); background:rgba(124,58,237,0.15); border-color:rgba(168,85,247,0.5); }
     .nav-drawer-cta {
-      margin-top:4px; padding:13px 16px; border-radius:10px;
+      padding:12px 16px; border-radius:100px;
       font-size:0.92rem; font-weight:600; text-align:center; text-decoration:none;
       background:linear-gradient(135deg,var(--primary),var(--mid)); color:#fff;
     }
@@ -859,8 +862,8 @@
       .brand-text { font-size:1.05rem; }
       .nav-desktop-ctas { display:none !important; }
       .nav-hamburger { display:flex; }
-      /* Kill blur animations on mobile — root cause of background glitch */
-      .hero-orb { filter:none !important; animation:none !important; opacity:0.5; }
+      /* Orbs: lighter blur, no animation (animation was causing scroll repaint) */
+      .hero-orb { filter:blur(50px) !important; animation:none !important; }
       #neural-canvas { display:none; }
     }
 
@@ -2393,8 +2396,15 @@
   (function() {
     var btn = document.getElementById('nav-hamburger');
     var drawer = document.getElementById('nav-mobile-drawer');
-    if (!btn || !drawer) return;
+    var nav = document.querySelector('body > nav');
+    if (!btn || !drawer || !nav) return;
+    function setDrawerTop() {
+      drawer.style.top = nav.getBoundingClientRect().height + 'px';
+    }
+    setDrawerTop();
+    window.addEventListener('resize', setDrawerTop);
     btn.addEventListener('click', function() {
+      setDrawerTop();
       drawer.classList.toggle('open');
     });
     drawer.querySelectorAll('a').forEach(function(a) {
