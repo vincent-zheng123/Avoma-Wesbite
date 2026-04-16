@@ -808,28 +808,47 @@
       footer { flex-direction:column; gap:16px; text-align:center; }
       .hero-stats { gap:32px; }
     }
+    /* ── Hamburger + mobile drawer ── */
+    .nav-hamburger {
+      display:none; flex-direction:column; justify-content:center; gap:5px;
+      width:36px; height:36px; background:none; border:none; cursor:pointer; padding:4px;
+    }
+    .nav-hamburger span {
+      display:block; height:2px; border-radius:2px;
+      background:var(--text); transition:opacity 0.2s, transform 0.2s;
+    }
+    .nav-mobile-drawer {
+      display:none; position:fixed; top:54px; left:0; right:0; z-index:99;
+      flex-direction:column; gap:4px; padding:12px 16px 16px;
+      background:rgba(6,4,15,0.97);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-mobile-drawer.open { display:flex; }
+    .nav-drawer-link {
+      padding:13px 16px; border-radius:10px; font-size:0.92rem;
+      color:var(--muted); text-decoration:none; font-weight:500;
+      transition:color 0.2s, background 0.2s;
+    }
+    .nav-drawer-link:hover { color:var(--text); background:rgba(168,85,247,0.08); }
+    .nav-drawer-cta {
+      margin-top:4px; padding:13px 16px; border-radius:10px;
+      font-size:0.92rem; font-weight:600; text-align:center; text-decoration:none;
+      background:linear-gradient(135deg,var(--primary),var(--mid)); color:#fff;
+    }
+
     @media(max-width:580px){
       .services-grid,.cases-grid { grid-template-columns:1fr; }
-      #hero { padding-top: 80px; }
+      #hero { padding-top: 100px; }
+      .hero-tag { margin-top: 16px; }
       #hero h1 { font-size: clamp(1.85rem, 7.5vw, 2.5rem); white-space: nowrap; }
       nav {
-        padding:12px 16px;
-        background:rgba(6,4,15,0.95);
+        padding:11px 16px;
+        background:rgba(6,4,15,0.97);
         backdrop-filter:none; -webkit-backdrop-filter:none;
       }
       .brand-text { font-size:1.1rem; }
-      nav > div:last-child { gap:10px; }
-      nav > div:last-child > a.btn-ghost {
-        padding:0 !important; font-size:0.82rem !important;
-        border:none !important; background:none !important;
-        box-shadow:none !important; color:var(--muted) !important;
-        white-space:nowrap;
-      }
-      nav > div:last-child > a.btn-ghost:hover { color:var(--text) !important; }
-      nav > div:last-child .btn-nav { padding:8px 14px; font-size:0.8rem; white-space:nowrap; }
-      .hero-login-mobile { display:block; }
-      .hero-login-mobile { margin-top:-52px; margin-bottom:52px; font-size:0.82rem; color:var(--muted); text-align:center; }
-      .hero-login-mobile a { color:var(--mid); text-decoration:none; }
+      .nav-desktop-ctas { display:none !important; }
+      .nav-hamburger { display:flex; }
     }
 
     /* ── How It Works ── */
@@ -1202,11 +1221,18 @@
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div style="display:flex;align-items:center;gap:12px;">
+  <div class="nav-desktop-ctas" style="display:flex;align-items:center;gap:12px;">
     <a href="https://app.callavoma.com/login" class="btn-ghost" style="padding:9px 20px;font-size:0.86rem;">Log In</a>
     <div class="btn-glow-wrap" style="border-radius:10px"><a href="/start" class="btn-nav">Get Started</a></div>
   </div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="nav-mobile-drawer" id="nav-mobile-drawer">
+  <a href="https://app.callavoma.com/login" class="nav-drawer-link">Log In</a>
+  <a href="/start" class="nav-drawer-cta">Get Started</a>
+</div>
 
 <section id="hero">
   <canvas id="neural-canvas"></canvas>
@@ -2335,17 +2361,32 @@
   // Hide nav on scroll down (mobile only), show on scroll up
   (function() {
     var nav = document.querySelector('body > nav');
+    var drawer = document.getElementById('nav-mobile-drawer');
     var lastY = 0;
     window.addEventListener('scroll', function() {
       if (window.innerWidth > 580) { nav.style.transform = ''; return; }
       var y = window.scrollY;
-      if (y > lastY && y > 80) {
+      if (y > lastY && y > 20) {
         nav.style.transform = 'translateY(-100%)';
+        drawer.classList.remove('open');
       } else {
         nav.style.transform = 'translateY(0)';
       }
       lastY = y;
     }, { passive: true });
+  })();
+
+  // Hamburger toggle
+  (function() {
+    var btn = document.getElementById('nav-hamburger');
+    var drawer = document.getElementById('nav-mobile-drawer');
+    if (!btn || !drawer) return;
+    btn.addEventListener('click', function() {
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() { drawer.classList.remove('open'); });
+    });
   })();
 
 </script>
