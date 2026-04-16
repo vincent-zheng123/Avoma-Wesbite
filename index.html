@@ -867,9 +867,9 @@
       #neural-canvas { display:none; }
       #hero {
         background:
-          radial-gradient(ellipse 90% 55% at 15% 25%, rgba(124,58,237,0.45) 0%, transparent 60%),
-          radial-gradient(ellipse 65% 50% at 90% 45%, rgba(232,121,249,0.28) 0%, transparent 55%),
-          radial-gradient(ellipse 55% 55% at 50% 95%, rgba(168,85,247,0.22) 0%, transparent 50%);
+          radial-gradient(ellipse 90% 55% at 15% 25%, rgba(124,58,237,0.65) 0%, transparent 60%),
+          radial-gradient(ellipse 65% 50% at 90% 45%, rgba(232,121,249,0.45) 0%, transparent 55%),
+          radial-gradient(ellipse 55% 55% at 50% 95%, rgba(168,85,247,0.35) 0%, transparent 50%);
       }
     }
 
@@ -2391,7 +2391,7 @@
       if (y > lastY && y > 1) {
         nav.style.transform = 'translateY(-100%)';
         drawer.classList.remove('open');
-      } else {
+      } else if (y < 60) {
         nav.style.transform = 'translateY(0)';
       }
       lastY = y;
