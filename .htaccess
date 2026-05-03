@@ -2,3 +2,5 @@ Options -Indexes
 
 RewriteEngine On
 RewriteRule ^start$ /start.html [L]
+RewriteRule ^privacy-policy$ /privacy-policy.html [L]
+RewriteRule ^terms$ /terms.html [L]
